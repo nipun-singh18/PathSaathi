@@ -1,25 +1,17 @@
-# 🎯 PathSaathi
-**Your AI-Powered Career Companion**
+# my_app
 
-PathSaathi is an intelligent platform built for the Google Hackathon that transforms a student's dream job into a realistic, step-by-step visual roadmap using AI. Instead of static lists, we provide personalized, actionable timelines.
+A new Flutter project.
 
-## ✨ Key Features
-* **🧠 AI Career Matching:** Get personalized career recommendations with a realistic "Reality Score" powered by the Gemini API.
-* **📍 Visual Roadmap:** A step-by-step timeline including skills, projects, milestones, and certifications.
-* **🏛️ Government Scheme Integration:** Automatically filters financial aid and scholarships (like Post Matric, PM-USP) based on the student's income and category.
-* **🔄 Alternate Paths:** Smart budget constraint feature that recalculates career options if the primary dream is unaffordable.
-* **🌍 SDG Alignment & Accessibility:** Built-in Hindi language support to ensure accessibility for every tier of student in India.
+## Getting Started
 
-## 🛠️ Tech Stack
-* **Frontend:** Flutter
-* **Backend & Auth:** Firebase
-* **AI Engine:** Google Gemini API
+This project is a starting point for a Flutter application.
 
-## 👥 The Team
-* **Nipun Singh:** Frontend Architecture, UI/UX, & Navigation Flow
-* **Hardik:** Firebase Setup, Backend Integration, & Logic
-* **Tanisha:** Gemini Prompt Engineering & Alternate Path Logic
-* **Tiya:** Knowledge Base Creation, Data Verification, & Demo Prep
+A few resources to get you started if this is your first Flutter project:
 
----
-*Built with ❤️ for the Google Hackathon*
+- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
+- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "763413463427",
+    "project_id": "pathsaathi-bee16",
+    "storage_bucket": "pathsaathi-bee16.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763413463427:android:38af5a9e339072d2e2f6b6",
+        "android_client_info": {
+          "package_name": "com.example.my_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763413463427-iuute0l4s7b6mqvcphipludeovbh77d3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.my_app",
+            "certificate_hash": "65fe22bcfa673b4217042d9e2e285c7906a3726e"
+          }
+        },
+        {
+          "client_id": "763413463427-s1tj1c5340o4qq4jsv88m81vbvvbpg9f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClCYywRGf8w1q6VTucr1UTQ-tYmqZHSeE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763413463427-s1tj1c5340o4qq4jsv88m81vbvvbpg9f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
