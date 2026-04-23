@@ -1,22 +1,44 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'screens/profile_input_screen.dart';
-import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'firebase_options.dart';
+import 'services/knowledge_base.dart';
+
+// --- APP SCREENS ---
+import 'screens/welcome_screen.dart';
+import 'screens/stream_selection_screen.dart';
+import 'screens/profile_input_screen.dart';
+import 'screens/processing_screen.dart';
+import 'screens/career_recommendations_screen.dart';
+import 'screens/career_detail_screen.dart';
+import 'screens/visual_roadmap_screen.dart';
+import 'screens/government_schemes_screen.dart';
+import 'screens/alternate_paths_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+
+  // Load .env safely — don't crash if file is missing.
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    debugPrint('Warning: .env file not loaded: $e');
+  }
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+
+  // Load career/scheme/question data from assets/data/
+  await KnowledgeBase.instance.load();
+
+  runApp(const PathSaathiApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class PathSaathiApp extends StatelessWidget {
+  const PathSaathiApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +46,27 @@ class MyApp extends StatelessWidget {
       title: 'PathSaathi',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
       ),
       home: const AuthGate(),
+      routes: {
+        '/welcome': (context) => const WelcomeScreen(),
+        '/stream_selection': (context) => const StreamSelectionScreen(),
+        '/profile_input': (context) => const ProfileInputScreen(),
+        '/processing': (context) => const ProcessingScreen(),
+        '/career_recommendations': (context) =>
+            const CareerRecommendationsScreen(),
+        '/career_detail': (context) => const CareerDetailScreen(),
+        '/visual_roadmap': (context) => const VisualRoadmapScreen(),
+        '/government_schemes': (context) => const GovernmentSchemesScreen(),
+        '/alternate_paths': (context) => const AlternatePathsScreen(),
+      },
     );
   }
 }
 
+// --- AUTHENTICATION GATEWAY ---
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 
@@ -45,7 +81,7 @@ class AuthGate extends StatelessWidget {
           );
         }
         if (snapshot.hasData) {
-          return const ProfileInputScreen();
+          return const WelcomeScreen();
         }
         return const SignInPage();
       },
@@ -53,163 +89,124 @@ class AuthGate extends StatelessWidget {
   }
 }
 
-class SignInPage extends StatelessWidget {
+// --- SIGN IN PAGE (works on both web and Android) ---
+class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
 
+  @override
+  State<SignInPage> createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  bool _isSigningIn = false;
+
   Future<void> signInWithGoogle() async {
-    if (kIsWeb) {
-      final provider = GoogleAuthProvider();
-      await FirebaseAuth.instance.signInWithPopup(provider);
-    } else {
-      final googleSignIn = GoogleSignIn();
-      final googleUser = await googleSignIn.signIn();
-      if (googleUser == null) return;
+    setState(() => _isSigningIn = true);
+    try {
+      if (kIsWeb) {
+        final provider = GoogleAuthProvider();
+        await FirebaseAuth.instance.signInWithPopup(provider);
+      } else {
+        final googleSignIn = GoogleSignIn();
+        final googleUser = await googleSignIn.signIn();
+        if (googleUser == null) {
+          if (mounted) setState(() => _isSigningIn = false);
+          return;
+        }
 
-      final googleAuth = await googleUser.authentication;
+        final googleAuth = await googleUser.authentication;
 
-      final credential = GoogleAuthProvider.credential(
-        idToken: googleAuth.idToken,
-      );
+        // CRITICAL: mobile requires BOTH accessToken and idToken
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
 
-      await FirebaseAuth.instance.signInWithCredential(credential);
+        await FirebaseAuth.instance.signInWithCredential(credential);
+      }
+
+      // Create/update user document in Firestore
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection('students')
+            .doc(user.uid)
+            .set({
+              'uid': user.uid,
+              'email': user.email,
+              'displayName': user.displayName,
+              'createdAt': FieldValue.serverTimestamp(),
+              'lastActive': FieldValue.serverTimestamp(),
+            }, SetOptions(merge: true));
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isSigningIn = false);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Login failed: $e')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('PathSaathi Login')),
+      backgroundColor: Colors.grey[50],
       body: Center(
-        child: ElevatedButton.icon(
-          onPressed: () async {
-            try {
-              await signInWithGoogle();
-            } catch (e) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('Login failed: $e')));
-            }
-          },
-          icon: const Icon(Icons.login),
-          label: const Text('Sign in with Google'),
-        ),
-      ),
-    );
-  }
-}
-
-class StudentProfilePage extends StatefulWidget {
-  const StudentProfilePage({super.key});
-
-  @override
-  State<StudentProfilePage> createState() => _StudentProfilePageState();
-}
-
-class _StudentProfilePageState extends State<StudentProfilePage> {
-  final nameController = TextEditingController();
-  final courseController = TextEditingController();
-  final collegeController = TextEditingController();
-  String message = '';
-
-  User get currentUser => FirebaseAuth.instance.currentUser!;
-
-  Future<void> saveProfile() async {
-    await FirebaseFirestore.instance
-        .collection('students')
-        .doc(currentUser.uid)
-        .set({
-          'uid': currentUser.uid,
-          'email': currentUser.email,
-          'name': nameController.text.trim(),
-          'course': courseController.text.trim(),
-          'college': collegeController.text.trim(),
-          'updatedAt': FieldValue.serverTimestamp(),
-        });
-    setState(() => message = 'Profile saved successfully ✅');
-  }
-
-  Future<void> loadProfile() async {
-    final doc = await FirebaseFirestore.instance
-        .collection('students')
-        .doc(currentUser.uid)
-        .get();
-    if (doc.exists) {
-      final data = doc.data()!;
-      nameController.text = data['name'] ?? '';
-      courseController.text = data['course'] ?? '';
-      collegeController.text = data['college'] ?? '';
-      setState(() => message = 'Profile loaded ✅');
-    } else {
-      setState(() => message = 'No profile found');
-    }
-  }
-
-  // ✅ FIXED: signOut without google_sign_in package
-  Future<void> signOut() async {
-    await FirebaseAuth.instance.signOut();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    loadProfile();
-  }
-
-  @override
-  void dispose() {
-    nameController.dispose();
-    courseController.dispose();
-    collegeController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Student Profile'),
-        actions: [
-          IconButton(onPressed: signOut, icon: const Icon(Icons.logout)),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Signed in as: ${currentUser.email ?? "No email"}'),
-            const SizedBox(height: 16),
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(labelText: 'Name'),
-            ),
-            TextField(
-              controller: courseController,
-              decoration: const InputDecoration(labelText: 'Course'),
-            ),
-            TextField(
-              controller: collegeController,
-              decoration: const InputDecoration(labelText: 'College'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: saveProfile,
-              child: const Text('Save Profile'),
-            ),
-            const SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: loadProfile,
-              child: const Text('Read Profile'),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              message,
-              style: const TextStyle(
-                color: Colors.green,
-                fontWeight: FontWeight.bold,
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.school, size: 80, color: Colors.blue),
+              const SizedBox(height: 16),
+              const Text(
+                'PathSaathi',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1A1A2E),
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 8),
+              Text(
+                'Your AI-powered career companion',
+                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+              ),
+              const SizedBox(height: 48),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _isSigningIn ? null : signInWithGoogle,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  icon: _isSigningIn
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Icon(Icons.login),
+                  label: Text(
+                    _isSigningIn ? 'Signing in...' : 'Sign in with Google',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

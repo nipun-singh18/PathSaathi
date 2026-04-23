@@ -1,0 +1,300 @@
+[
+  {
+    "id": 1,
+    "name": "Post Matric Scholarship (SC/ST/OBC)",
+    "category_eligible_raw": "SC / ST / OBC",
+    "category_eligible": [
+      "SC",
+      "ST",
+      "OBC"
+    ],
+    "income_limit_raw": "Below ₹2.5L",
+    "income_limit": {
+      "max": 250000
+    },
+    "amount_raw": "₹7K–12K + tuition",
+    "stream_applicable": "All Streams (UG/PG)",
+    "deadline": "Oct–Nov annually",
+    "application_link": "scholarships.gov.in",
+    "notes": "Apply via NSP portal. One of the highest-volume schemes."
+  },
+  {
+    "id": 2,
+    "name": "Central Sector Scheme of Scholarship (CSSS)",
+    "category_eligible_raw": "General / Meritorious",
+    "category_eligible": [
+      "General",
+      "Meritorious"
+    ],
+    "income_limit_raw": "Below ₹8L",
+    "income_limit": {
+      "max": 800000
+    },
+    "amount_raw": "₹10K/yr UG + ₹20K PG",
+    "stream_applicable": "Science, Commerce, Humanities",
+    "deadline": "Sep–Oct annually",
+    "application_link": "scholarships.gov.in",
+    "notes": "Top 1% of each stream in 12th boards. Merit based."
+  },
+  {
+    "id": 3,
+    "name": "PM USHA Scholarship (PM-USP)",
+    "category_eligible_raw": "SC / ST / OBC / EWS",
+    "category_eligible": [
+      "SC",
+      "ST",
+      "OBC",
+      "EWS"
+    ],
+    "income_limit_raw": "Below ₹6L",
+    "income_limit": {
+      "max": 600000
+    },
+    "amount_raw": "Up to ₹60K/yr",
+    "stream_applicable": "All UG/PG",
+    "deadline": "Varies by state",
+    "application_link": "pfms.nic.in",
+    "notes": "Routed through state governments. Check state portal."
+  },
+  {
+    "id": 4,
+    "name": "National Scholarship Portal (NSP) — Umbrella",
+    "category_eligible_raw": "All categories",
+    "category_eligible": [
+      "All categories"
+    ],
+    "income_limit_raw": "₹2.5L–8L (varies per scheme)",
+    "income_limit": {
+      "min": 250000,
+      "max": 800000
+    },
+    "amount_raw": "₹5K–75K depending on level",
+    "stream_applicable": "All Streams",
+    "deadline": "Aug–Oct annually",
+    "application_link": "scholarships.gov.in",
+    "notes": "Single portal for 50+ central and state schemes."
+  },
+  {
+    "id": 5,
+    "name": "AICTE Pragati Scholarship (Girls in Tech)",
+    "category_eligible_raw": "Girl students in tech",
+    "category_eligible": [
+      "Girl students in tech"
+    ],
+    "income_limit_raw": "Below ₹8L",
+    "income_limit": {
+      "max": 800000
+    },
+    "amount_raw": "₹50K/yr + ₹30K one-time",
+    "stream_applicable": "Engineering / Pharmacy",
+    "deadline": "Aug–Sep annually",
+    "application_link": "aicte-india.org",
+    "notes": "One per family. Only for AICTE-approved institutions."
+  },
+  {
+    "id": 6,
+    "name": "AICTE Saksham Scholarship (PwD)",
+    "category_eligible_raw": "Persons with Disability",
+    "category_eligible": [
+      "Persons with Disability"
+    ],
+    "income_limit_raw": "Below ₹8L",
+    "income_limit": {
+      "max": 800000
+    },
+    "amount_raw": "₹50K/yr + ₹30K one-time",
+    "stream_applicable": "Technical Education",
+    "deadline": "Aug–Sep annually",
+    "application_link": "aicte-india.org",
+    "notes": "Valid disability certificate required (40%+ disability)."
+  },
+  {
+    "id": 7,
+    "name": "Maulana Azad National Scholarship (Minorities)",
+    "category_eligible_raw": "Minority communities (Muslim, Christian, Sikh, Buddhist, Jain, Parsi)",
+    "category_eligible": [
+      "Minority communities (Muslim",
+      "Christian",
+      "Sikh",
+      "Buddhist",
+      "Jain",
+      "Parsi)"
+    ],
+    "income_limit_raw": "Below ₹2L",
+    "income_limit": {
+      "max": 200000
+    },
+    "amount_raw": "₹12K–20K/yr",
+    "stream_applicable": "UG / PG",
+    "deadline": "October",
+    "application_link": "maef.nic.in",
+    "notes": "Ministry of Minority Affairs. Separate portal from NSP."
+  },
+  {
+    "id": 8,
+    "name": "INSPIRE Scholarship (DST)",
+    "category_eligible_raw": "Top 1% in 12th board",
+    "category_eligible": [
+      "Top 1% in 12th board"
+    ],
+    "income_limit_raw": "No income limit",
+    "income_limit": null,
+    "amount_raw": "₹80K/yr",
+    "stream_applicable": "B.Sc / BS in Natural Sciences only",
+    "deadline": "September",
+    "application_link": "online-inspire.gov.in",
+    "notes": "Only for students pursuing pure science (not engg/medical)"
+  },
+  {
+    "id": 9,
+    "name": "Ishan Uday (NE Students — UGC)",
+    "category_eligible_raw": "North-East state domicile",
+    "category_eligible": [
+      "North-East state domicile"
+    ],
+    "income_limit_raw": "Below ₹4.5L",
+    "income_limit": {
+      "max": 450000
+    },
+    "amount_raw": "₹5,400–7,800/month",
+    "stream_applicable": "General degree colleges (not IIT/NIT/central univ)",
+    "deadline": "Application ongoing",
+    "application_link": "ugc.ac.in",
+    "notes": "For students from 8 North-Eastern states."
+  },
+  {
+    "id": 10,
+    "name": "PM Scholarship for RPF / CRPF Wards",
+    "category_eligible_raw": "Wards of RPF / CRPF / ex-servicemen",
+    "category_eligible": [
+      "Wards of RPF",
+      "CRPF",
+      "ex-servicemen"
+    ],
+    "income_limit_raw": "Below ₹6L",
+    "income_limit": {
+      "max": 600000
+    },
+    "amount_raw": "₹2,500–3,000/month",
+    "stream_applicable": "All professional UG courses",
+    "deadline": "Twice a year",
+    "application_link": "ksb.gov.in",
+    "notes": "Kendriya Sainik Board manages this."
+  },
+  {
+    "id": 11,
+    "name": "Punjab Post Matric Scholarship (SC)",
+    "category_eligible_raw": "SC (Punjab domicile)",
+    "category_eligible": [
+      "SC (Punjab domicile)"
+    ],
+    "income_limit_raw": "Below ₹2.5L",
+    "income_limit": {
+      "max": 250000
+    },
+    "amount_raw": "Full tuition + maintenance allowance",
+    "stream_applicable": "All Streams",
+    "deadline": "Oct–Nov",
+    "application_link": "punjab.gov.in / NSP",
+    "notes": "Must have Punjab domicile certificate."
+  },
+  {
+    "id": 12,
+    "name": "Punjab EWS Scholarship",
+    "category_eligible_raw": "EWS General (Punjab)",
+    "category_eligible": [
+      "EWS General (Punjab)"
+    ],
+    "income_limit_raw": "Below ₹8L",
+    "income_limit": {
+      "max": 800000
+    },
+    "amount_raw": "Up to ₹25K/yr",
+    "stream_applicable": "All Streams",
+    "deadline": "Aug–Sep",
+    "application_link": "punjab.gov.in",
+    "notes": "EWS certificate from Punjab Revenue Dept required."
+  },
+  {
+    "id": 13,
+    "name": "Haryana Post Matric Scholarship (SC/BC)",
+    "category_eligible_raw": "SC / BC (Haryana domicile)",
+    "category_eligible": [
+      "SC",
+      "BC (Haryana domicile)"
+    ],
+    "income_limit_raw": "Below ₹2.5L",
+    "income_limit": {
+      "max": 250000
+    },
+    "amount_raw": "₹5K–15K/yr + tuition",
+    "stream_applicable": "All Streams",
+    "deadline": "After 12th results",
+    "application_link": "haryana.gov.in / NSP",
+    "notes": "Apply via Haryana welfare portal or NSP."
+  },
+  {
+    "id": 14,
+    "name": "Himachal Pradesh Merit Scholarship",
+    "category_eligible_raw": "HP domicile, merit",
+    "category_eligible": [
+      "HP domicile",
+      "merit"
+    ],
+    "income_limit_raw": "No limit for pure merit",
+    "income_limit": null,
+    "amount_raw": "₹5K–10K/yr",
+    "stream_applicable": "All Streams",
+    "deadline": "Sep",
+    "application_link": "hpepass.nic.in",
+    "notes": "HP Education dept manages. Separate state portal."
+  },
+  {
+    "id": 15,
+    "name": "Vidyalakshmi Education Loan Portal",
+    "category_eligible_raw": "All students — loan scheme",
+    "category_eligible": [
+      "All students — loan scheme"
+    ],
+    "income_limit_raw": "No income bar for loan",
+    "income_limit": null,
+    "amount_raw": "Loan: ₹4L–20L+",
+    "stream_applicable": "All Streams",
+    "deadline": "Apply anytime",
+    "application_link": "vidyalakshmi.co.in",
+    "notes": "Bank loan, not grant. 34 banks linked. Subsidised interest for below ₹4.5L income."
+  },
+  {
+    "id": 16,
+    "name": "Dr. Ambedkar Post Matric Scholarship (OBC/EBC)",
+    "category_eligible_raw": "OBC / EBC",
+    "category_eligible": [
+      "OBC",
+      "EBC"
+    ],
+    "income_limit_raw": "Below ₹1L (EBC) / ₹3L (OBC)",
+    "income_limit": {
+      "max": 300000
+    },
+    "amount_raw": "₹5K–10K + tuition",
+    "stream_applicable": "All Streams",
+    "deadline": "Sep–Oct",
+    "application_link": "socialjustice.gov.in / NSP",
+    "notes": "Ministry of Social Justice scheme."
+  },
+  {
+    "id": 17,
+    "name": "PFMS Direct Benefit Transfer Tracker",
+    "category_eligible_raw": "All (DBT verification)",
+    "category_eligible": [
+      "All (DBT verification)"
+    ],
+    "income_limit_raw": "Varies per scheme",
+    "income_limit": null,
+    "amount_raw": "Varies",
+    "stream_applicable": "All",
+    "deadline": "Scheme-specific",
+    "application_link": "pfms.nic.in",
+    "notes": "Use PFMS to track scholarship payment status for any scheme."
+  }
+]

@@ -1,0 +1,930 @@
+{
+  "Medical": [
+    {
+      "id": "M1",
+      "question": "When you imagine yourself working in healthcare 10 years from now, where do you picture yourself?",
+      "options": [
+        {
+          "label": "A",
+          "text": "In a hospital treating patients directly"
+        },
+        {
+          "label": "B",
+          "text": "In a research lab discovering cures"
+        },
+        {
+          "label": "C",
+          "text": "In a community helping large groups stay healthy"
+        },
+        {
+          "label": "D",
+          "text": "Running a pharmacy or health business"
+        }
+      ],
+      "trait_map": "Patient care / Research / Public health / Entrepreneurship"
+    },
+    {
+      "id": "M2",
+      "question": "A patient comes in with an unknown condition. What excites you most?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Diagnosing and treating them immediately"
+        },
+        {
+          "label": "B",
+          "text": "Running tests and analysing results"
+        },
+        {
+          "label": "C",
+          "text": "Understanding how their lifestyle caused it"
+        },
+        {
+          "label": "D",
+          "text": "Finding which medicine works best"
+        }
+      ],
+      "trait_map": "Clinical / Diagnostic / Preventive / Pharmacology"
+    },
+    {
+      "id": "M3",
+      "question": "How do you feel about long years of study (5–8 years) before you earn well?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Totally fine — I am committed to medicine fully"
+        },
+        {
+          "label": "B",
+          "text": "Okay if I can specialise in something I love"
+        },
+        {
+          "label": "C",
+          "text": "I prefer a 3-yr course and start working sooner"
+        },
+        {
+          "label": "D",
+          "text": "I want to study and earn simultaneously"
+        }
+      ],
+      "trait_map": "MBBS/PG / Specialist / Allied / Pharmacy"
+    },
+    {
+      "id": "M4",
+      "question": "Which subject in biology class did you enjoy most?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Human physiology and anatomy"
+        },
+        {
+          "label": "B",
+          "text": "Genetics and cell biology"
+        },
+        {
+          "label": "C",
+          "text": "Ecology and environment"
+        },
+        {
+          "label": "D",
+          "text": "Chemistry of medicines and drugs"
+        }
+      ],
+      "trait_map": "Clinical / Research-Bio / Public health / Pharma"
+    },
+    {
+      "id": "M5",
+      "question": "How comfortable are you with physical contact with patients (injections, examinations)?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Very comfortable — I want direct patient contact daily"
+        },
+        {
+          "label": "B",
+          "text": "Somewhat — I prefer minimal contact"
+        },
+        {
+          "label": "C",
+          "text": "I prefer working with machines and equipment"
+        },
+        {
+          "label": "D",
+          "text": "I prefer working with data and reports"
+        }
+      ],
+      "trait_map": "Doctor/Nurse / AYUSH / Allied Tech / Informatics"
+    },
+    {
+      "id": "M6",
+      "question": "What kind of work environment suits you best?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Fast-paced emergency or OT setting"
+        },
+        {
+          "label": "B",
+          "text": "Quiet lab or research setting"
+        },
+        {
+          "label": "C",
+          "text": "Community / outdoor fieldwork"
+        },
+        {
+          "label": "D",
+          "text": "Office or hospital admin setting"
+        }
+      ],
+      "trait_map": "Emergency/Surgery / Research / Public health / Admin"
+    },
+    {
+      "id": "M7",
+      "question": "If you had to choose only one, what matters most to you in a career?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Saving individual lives directly"
+        },
+        {
+          "label": "B",
+          "text": "Discovering something new for humanity"
+        },
+        {
+          "label": "C",
+          "text": "Improving health of communities and society"
+        },
+        {
+          "label": "D",
+          "text": "Financial stability and business growth"
+        }
+      ],
+      "trait_map": "Clinical doctor / Researcher / Public health / Entrepreneur"
+    },
+    {
+      "id": "M8",
+      "question": "How do you feel about working night shifts and long unpredictable hours?",
+      "options": [
+        {
+          "label": "A",
+          "text": "I accept it fully — it comes with the profession"
+        },
+        {
+          "label": "B",
+          "text": "I can manage a few years but want balance later"
+        },
+        {
+          "label": "C",
+          "text": "I strongly prefer fixed day hours"
+        },
+        {
+          "label": "D",
+          "text": "I prefer to set my own schedule"
+        }
+      ],
+      "trait_map": "MBBS/Nursing / Allied / Dietitian / Private practice"
+    },
+    {
+      "id": "M9",
+      "question": "Which allied field sounds most interesting to you?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Imaging — X-Ray, MRI, CT scans (MRIT/Radiology)"
+        },
+        {
+          "label": "B",
+          "text": "Rehab — Physiotherapy or Occupational Therapy"
+        },
+        {
+          "label": "C",
+          "text": "Lab work — testing blood, tissues, cultures"
+        },
+        {
+          "label": "D",
+          "text": "Nutrition, diet and preventive wellness"
+        }
+      ],
+      "trait_map": "Radiology tech / Physio/OT / Lab tech / Dietitian"
+    },
+    {
+      "id": "M10",
+      "question": "What is your family's approximate annual income? (This helps match scholarships)",
+      "options": [
+        {
+          "label": "A",
+          "text": "Below ₹2.5 lakh"
+        },
+        {
+          "label": "B",
+          "text": "₹2.5 lakh – ₹6 lakh"
+        },
+        {
+          "label": "C",
+          "text": "₹6 lakh – ₹12 lakh"
+        },
+        {
+          "label": "D",
+          "text": "Above ₹12 lakh"
+        }
+      ],
+      "trait_map": "Scholarship eligibility filter for Gemini"
+    }
+  ],
+  "Non-Medical": [
+    {
+      "id": "NM1",
+      "question": "What would you most enjoy doing on a typical workday?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Building something physical — machines, circuits, structures"
+        },
+        {
+          "label": "B",
+          "text": "Writing code and solving software problems"
+        },
+        {
+          "label": "C",
+          "text": "Designing products, interfaces, or visual systems"
+        },
+        {
+          "label": "D",
+          "text": "Analysing data, solving complex mathematical problems"
+        }
+      ],
+      "trait_map": "Mechanical/Civil / CS / Design / Data Science"
+    },
+    {
+      "id": "NM2",
+      "question": "When something breaks at home, what is your first instinct?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Try to fix it yourself by understanding how it works"
+        },
+        {
+          "label": "B",
+          "text": "Look up solutions and test different approaches"
+        },
+        {
+          "label": "C",
+          "text": "Think about whether it could be designed better"
+        },
+        {
+          "label": "D",
+          "text": "Ignore it and call someone who knows"
+        }
+      ],
+      "trait_map": "Core engg / Problem-solver / Design / Non-technical"
+    },
+    {
+      "id": "NM3",
+      "question": "Which project would you most enjoy in school?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Building a working robot or mechanical model"
+        },
+        {
+          "label": "B",
+          "text": "Creating an app or a website"
+        },
+        {
+          "label": "C",
+          "text": "Designing a poster, logo, or 3D model"
+        },
+        {
+          "label": "D",
+          "text": "Analysing statistics and presenting findings"
+        }
+      ],
+      "trait_map": "Mechanical/ECE / CS / Design / Analytics"
+    },
+    {
+      "id": "NM4",
+      "question": "How do you feel about JEE preparation (1–2 years of intense study)?",
+      "options": [
+        {
+          "label": "A",
+          "text": "I am already preparing / fully committed to JEE"
+        },
+        {
+          "label": "B",
+          "text": "I gave it a try but did not qualify / moving on"
+        },
+        {
+          "label": "C",
+          "text": "I prefer to skip JEE and take a direct B.Sc route"
+        },
+        {
+          "label": "D",
+          "text": "I want a defence or government path after 12th"
+        }
+      ],
+      "trait_map": "IIT/NIT / State engg / B.Sc / NDA"
+    },
+    {
+      "id": "NM5",
+      "question": "If you could work on any of these real-world problems, which excites you most?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Building bridges, smart cities, or clean energy systems"
+        },
+        {
+          "label": "B",
+          "text": "Building AI, apps, or cybersecurity systems"
+        },
+        {
+          "label": "C",
+          "text": "Designing cars, aircraft, or consumer products"
+        },
+        {
+          "label": "D",
+          "text": "Solving climate change through science and research"
+        }
+      ],
+      "trait_map": "Civil/Mech / CS/ECE / Product design / Research"
+    },
+    {
+      "id": "NM6",
+      "question": "How do you feel about fieldwork — going to construction sites, factories, or outdoor locations?",
+      "options": [
+        {
+          "label": "A",
+          "text": "I love it — I want a hands-on, on-the-ground career"
+        },
+        {
+          "label": "B",
+          "text": "Sometimes fine, but I prefer mostly office/lab work"
+        },
+        {
+          "label": "C",
+          "text": "I prefer fully indoor, desk-based, or remote work"
+        },
+        {
+          "label": "D",
+          "text": "I want to serve the country through defence"
+        }
+      ],
+      "trait_map": "Civil/Mech/EEE / Mixed / CS/IT / NDA/AFCAT"
+    },
+    {
+      "id": "NM7",
+      "question": "Which technology area do you find most fascinating?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Space, satellites, or aviation technology"
+        },
+        {
+          "label": "B",
+          "text": "AI, machine learning, and data"
+        },
+        {
+          "label": "C",
+          "text": "Medical devices and biomedical engineering"
+        },
+        {
+          "label": "D",
+          "text": "Renewable energy and electric vehicles"
+        }
+      ],
+      "trait_map": "Aerospace / CS-AI / Biomedical Engg / EE/EV"
+    },
+    {
+      "id": "NM8",
+      "question": "How important is salary in the first 2 years of your career?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Very important — I need to support my family quickly"
+        },
+        {
+          "label": "B",
+          "text": "Important but I am okay with 1–2 years of low pay"
+        },
+        {
+          "label": "C",
+          "text": "Not a priority — I will go for higher studies first"
+        },
+        {
+          "label": "D",
+          "text": "I want a govt job with stable pay from day one"
+        }
+      ],
+      "trait_map": "Industry-first / Core engg / M.Tech/MS / Govt PSU"
+    },
+    {
+      "id": "NM9",
+      "question": "What best describes your relationship with mathematics?",
+      "options": [
+        {
+          "label": "A",
+          "text": "I genuinely love maths — it is my strongest subject"
+        },
+        {
+          "label": "B",
+          "text": "I am decent at maths but biology or computing is stronger"
+        },
+        {
+          "label": "C",
+          "text": "I find applied maths okay but pure theory bores me"
+        },
+        {
+          "label": "D",
+          "text": "I prefer logic and reasoning over number crunching"
+        }
+      ],
+      "trait_map": "IIT-level / B.Sc / Applied Engg / CS/Infra"
+    },
+    {
+      "id": "NM10",
+      "question": "What is your family's approximate annual income?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Below ₹2.5 lakh"
+        },
+        {
+          "label": "B",
+          "text": "₹2.5 lakh – ₹6 lakh"
+        },
+        {
+          "label": "C",
+          "text": "₹6 lakh – ₹12 lakh"
+        },
+        {
+          "label": "D",
+          "text": "Above ₹12 lakh"
+        }
+      ],
+      "trait_map": "Scholarship eligibility filter for Gemini"
+    }
+  ],
+  "Commerce": [
+    {
+      "id": "C1",
+      "question": "Which activity would you enjoy most as a career?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Auditing company accounts and catching financial fraud"
+        },
+        {
+          "label": "B",
+          "text": "Managing a team, business, or organisation"
+        },
+        {
+          "label": "C",
+          "text": "Advising clients in court on legal and corporate matters"
+        },
+        {
+          "label": "D",
+          "text": "Analysing stock markets and investment strategies"
+        }
+      ],
+      "trait_map": "CA/CMA / MBA-Mgmt / Law / CFA/Finance"
+    },
+    {
+      "id": "C2",
+      "question": "When you read business news, what catches your attention most?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Company balance sheets, taxation, and auditing news"
+        },
+        {
+          "label": "B",
+          "text": "Startup funding, mergers, and leadership stories"
+        },
+        {
+          "label": "C",
+          "text": "Legal cases, regulatory changes, court verdicts"
+        },
+        {
+          "label": "D",
+          "text": "Stock market movements, RBI policy, global economy"
+        }
+      ],
+      "trait_map": "CA/CMA/CS / MBA / Law / Economics/CFA"
+    },
+    {
+      "id": "C3",
+      "question": "How do you handle uncertainty and risk?",
+      "options": [
+        {
+          "label": "A",
+          "text": "I prefer certainty — give me clear rules and processes"
+        },
+        {
+          "label": "B",
+          "text": "I enjoy calculated risks and managing them smartly"
+        },
+        {
+          "label": "C",
+          "text": "I love high-risk, high-reward — I want to build something"
+        },
+        {
+          "label": "D",
+          "text": "I want a stable government job above everything"
+        }
+      ],
+      "trait_map": "CA/CS / MBA Finance / Entrepreneur / Banking/SSC"
+    },
+    {
+      "id": "C4",
+      "question": "What kind of people do you enjoy working with most?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Numbers, data, spreadsheets, financial statements"
+        },
+        {
+          "label": "B",
+          "text": "Teams, clients, negotiations, and presentations"
+        },
+        {
+          "label": "C",
+          "text": "Documents, legal texts, contracts, and regulations"
+        },
+        {
+          "label": "D",
+          "text": "Graphs, economic trends, statistics, and models"
+        }
+      ],
+      "trait_map": "Accounting/Finance / Management / Law / Economics"
+    },
+    {
+      "id": "C5",
+      "question": "How do you feel about the CA journey — 4–5 years, very low pass rates (~10%)?",
+      "options": [
+        {
+          "label": "A",
+          "text": "I am determined — CA is my target no matter what"
+        },
+        {
+          "label": "B",
+          "text": "I want a professional course but something more achievable"
+        },
+        {
+          "label": "C",
+          "text": "I prefer a degree route (BBA/B.Com) over exams"
+        },
+        {
+          "label": "D",
+          "text": "I want a govt banking/finance job, not a professional course"
+        }
+      ],
+      "trait_map": "CA / CMA/CS / Degree / Banking"
+    },
+    {
+      "id": "C6",
+      "question": "Imagine you are running a business. What is your biggest strength?",
+      "options": [
+        {
+          "label": "A",
+          "text": "I keep the books perfect and tax compliant"
+        },
+        {
+          "label": "B",
+          "text": "I inspire the team and grow the business"
+        },
+        {
+          "label": "C",
+          "text": "I make sure contracts are airtight and legal"
+        },
+        {
+          "label": "D",
+          "text": "I spot investment opportunities and manage money"
+        }
+      ],
+      "trait_map": "CA/CMA / MBA-Mktg/HR / Law / CFA/Finance"
+    },
+    {
+      "id": "C7",
+      "question": "Which of these roles sounds most exciting to you in 10 years?",
+      "options": [
+        {
+          "label": "A",
+          "text": "CFO or senior auditor at a big company"
+        },
+        {
+          "label": "B",
+          "text": "CEO, Director, or startup founder"
+        },
+        {
+          "label": "C",
+          "text": "Senior advocate or in-house legal counsel"
+        },
+        {
+          "label": "D",
+          "text": "Fund manager, economist, or investment banker"
+        }
+      ],
+      "trait_map": "CA/CMA / MBA / Law / CFA-Finance"
+    },
+    {
+      "id": "C8",
+      "question": "How important is earning early (before 25) to you?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Very important — I will do B.Com + professional exams together"
+        },
+        {
+          "label": "B",
+          "text": "Somewhat — I am okay with 3–4 years of investment"
+        },
+        {
+          "label": "C",
+          "text": "Not urgent — I will do MBA after graduation"
+        },
+        {
+          "label": "D",
+          "text": "I want a govt job by 23–24 via banking exams"
+        }
+      ],
+      "trait_map": "B.Com+CA / MBA / Post-grad MBA / Banking"
+    },
+    {
+      "id": "C9",
+      "question": "Which subject in school commerce did you love most?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Accountancy — making balance sheets, trial balance"
+        },
+        {
+          "label": "B",
+          "text": "Business Studies — management, marketing, leadership"
+        },
+        {
+          "label": "C",
+          "text": "Economics — demand-supply, GDP, monetary policy"
+        },
+        {
+          "label": "D",
+          "text": "Mathematics / Statistics — calculations and data"
+        }
+      ],
+      "trait_map": "CA/CMA / MBA / Economics/IAS / CFA/Data"
+    },
+    {
+      "id": "C10",
+      "question": "What is your family's approximate annual income?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Below ₹2.5 lakh"
+        },
+        {
+          "label": "B",
+          "text": "₹2.5 lakh – ₹6 lakh"
+        },
+        {
+          "label": "C",
+          "text": "₹6 lakh – ₹12 lakh"
+        },
+        {
+          "label": "D",
+          "text": "Above ₹12 lakh"
+        }
+      ],
+      "trait_map": "Scholarship eligibility filter for Gemini"
+    }
+  ],
+  "Arts": [
+    {
+      "id": "A1",
+      "question": "What do you most want to do with your life?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Lead and serve — I want to be a civil servant or administrator"
+        },
+        {
+          "label": "B",
+          "text": "Express and create — writing, design, film, or media"
+        },
+        {
+          "label": "C",
+          "text": "Understand and heal — psychology, counselling, social work"
+        },
+        {
+          "label": "D",
+          "text": "Argue and protect — law, justice, human rights"
+        }
+      ],
+      "trait_map": "UPSC/IAS / Creative fields / Psychology-SW / Law"
+    },
+    {
+      "id": "A2",
+      "question": "Which of these activities would you do even without being paid?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Reading history, political science, and current affairs"
+        },
+        {
+          "label": "B",
+          "text": "Writing stories, making videos, or designing posters"
+        },
+        {
+          "label": "C",
+          "text": "Listening to people's problems and helping them"
+        },
+        {
+          "label": "D",
+          "text": "Debating, arguing, and finding logical loopholes"
+        }
+      ],
+      "trait_map": "Civil services / Media-Design / Psychology / Law"
+    },
+    {
+      "id": "A3",
+      "question": "How do you feel about the UPSC journey — 3–6 years, very low selection rate?",
+      "options": [
+        {
+          "label": "A",
+          "text": "I am fully committed — UPSC is my dream"
+        },
+        {
+          "label": "B",
+          "text": "I will try for 2 years, and if not, explore other govt exams"
+        },
+        {
+          "label": "C",
+          "text": "I prefer a quicker creative or professional career"
+        },
+        {
+          "label": "D",
+          "text": "I want a stable teaching or social sector job"
+        }
+      ],
+      "trait_map": "UPSC / State PCS / Creative / Teaching-NGO"
+    },
+    {
+      "id": "A4",
+      "question": "When you consume media (news, movies, social), what do you most feel like doing?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Analysing and critiquing the information and its impact"
+        },
+        {
+          "label": "B",
+          "text": "Creating — making your own content, stories, or art"
+        },
+        {
+          "label": "C",
+          "text": "Understanding the human emotions and stories behind it"
+        },
+        {
+          "label": "D",
+          "text": "Examining the ethical and legal dimensions of issues"
+        }
+      ],
+      "trait_map": "Journalism-Policy / Media-Design / Psychology / Law"
+    },
+    {
+      "id": "A5",
+      "question": "In a group, what role do you naturally take?",
+      "options": [
+        {
+          "label": "A",
+          "text": "The one who plans, leads, and takes responsibility"
+        },
+        {
+          "label": "B",
+          "text": "The one who brings creative ideas and energy"
+        },
+        {
+          "label": "C",
+          "text": "The one who listens, mediates, and keeps peace"
+        },
+        {
+          "label": "D",
+          "text": "The one who challenges, debates, and pushes for fairness"
+        }
+      ],
+      "trait_map": "Admin-Leadership / Creative / Counsellor / Law"
+    },
+    {
+      "id": "A6",
+      "question": "Which of these would you find most fulfilling?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Being an IAS officer who transforms a district"
+        },
+        {
+          "label": "B",
+          "text": "Making a film or writing a book that changes minds"
+        },
+        {
+          "label": "C",
+          "text": "Running an NGO that helps underprivileged communities"
+        },
+        {
+          "label": "D",
+          "text": "Winning a landmark legal case that sets a new precedent"
+        }
+      ],
+      "trait_map": "UPSC / Creative / Social Work / Law"
+    },
+    {
+      "id": "A7",
+      "question": "How do you feel about government / public sector work?",
+      "options": [
+        {
+          "label": "A",
+          "text": "It is my first choice — power, prestige, and service"
+        },
+        {
+          "label": "B",
+          "text": "It is a backup — I prefer the private or creative sector"
+        },
+        {
+          "label": "C",
+          "text": "I want to work in civil society between govt and community"
+        },
+        {
+          "label": "D",
+          "text": "I want legal authority — judicial or regulatory work"
+        }
+      ],
+      "trait_map": "UPSC-IAS / Private sector / NGO / Law-Judiciary"
+    },
+    {
+      "id": "A8",
+      "question": "Which subject do you find most effortless to study?",
+      "options": [
+        {
+          "label": "A",
+          "text": "History, polity, geography, and current affairs"
+        },
+        {
+          "label": "B",
+          "text": "Literature, fine arts, or languages"
+        },
+        {
+          "label": "C",
+          "text": "Psychology, sociology, or philosophy"
+        },
+        {
+          "label": "D",
+          "text": "Political science, economics, or legal studies"
+        }
+      ],
+      "trait_map": "UPSC / Arts-Design / Psychology / Law-Economics"
+    },
+    {
+      "id": "A9",
+      "question": "Where do you see yourself working — location preference?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Anywhere in India — I am ready to move for a govt post"
+        },
+        {
+          "label": "B",
+          "text": "A major metro — Mumbai, Delhi, Bengaluru for creative work"
+        },
+        {
+          "label": "C",
+          "text": "I prefer to work near home or my community"
+        },
+        {
+          "label": "D",
+          "text": "Any city with good courts or legal infrastructure"
+        }
+      ],
+      "trait_map": "UPSC/IAS / Metro creative / Local-NGO / Law"
+    },
+    {
+      "id": "A10",
+      "question": "What is your family's approximate annual income?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Below ₹2.5 lakh"
+        },
+        {
+          "label": "B",
+          "text": "₹2.5 lakh – ₹6 lakh"
+        },
+        {
+          "label": "C",
+          "text": "₹6 lakh – ₹12 lakh"
+        },
+        {
+          "label": "D",
+          "text": "Above ₹12 lakh"
+        }
+      ],
+      "trait_map": "Scholarship eligibility filter for Gemini"
+    }
+  ]
+}
