@@ -1,17 +1,32 @@
-# my_app
+# 🎯 PathSaathi
+**Your AI-Powered Career Companion for the Real World**
 
-A new Flutter project.
+[![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)]()
+[![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)]()
+[![Gemini API](https://img.shields.io/badge/Gemini_API-8E75B2?style=for-the-badge&logo=googlebard&logoColor=white)]()
 
-## Getting Started
+*Built with ❤️ for the Google Hackathon*
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## 🚀 The Vision
+Millions of students struggle to connect their dream jobs with realistic, actionable steps—especially when constrained by financial backgrounds. **PathSaathi** bridges this gap. Instead of static lists, we use the power of AI to generate **personalized, step-by-step visual roadmaps** that adapt to a student's reality, budget, and social category.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## ✨ Key Features
+* **🧠 AI Career Matching:** Realistic "Reality Score" powered by the Gemini API.
+* **📍 Visual Roadmap:** Step-by-step timeline of skills, projects, milestones, and certifications.
+* **🏛️ Government Scheme Integration:** Smart filters for financial aid and scholarships (e.g., Post Matric, PM-USP).
+* **🔄 Alternate Paths:** Budget-aware career recalculations if the primary dream is unaffordable.
+* **🌍 Accessibility:** Built-in Hindi language support for inclusive education.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🛠️ Tech Stack
+* **Frontend:** Flutter (Dart)
+* **Backend:** Firebase & Cloud Firestore
+* **AI Engine:** Google Gemini API
+* **Knowledge Base:** Custom Data Loaders
+
+## 👥 The Team
+* **Nipun Singh** - Frontend Architecture & UI/UX
+* **Hardik** - Firebase Setup & Backend Integration
+* **Tanisha** - Gemini Prompt Engineering
+* **Tiya** - Knowledge Base Creation & Data Verification
