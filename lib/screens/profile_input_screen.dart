@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/gemini_service.dart';
+import '../l10n/app_localizations.dart';
 
 class ProfileInputScreen extends StatefulWidget {
   const ProfileInputScreen({super.key});
@@ -17,21 +18,59 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
   final budgetController = TextEditingController(); // education budget / year
   final locationController = TextEditingController();
   final marksController = TextEditingController(); // class 12 marks %
+  final neetScoreController = TextEditingController(); // /720 — Medical only
+  final jeePercentileController =
+      TextEditingController(); // 0-100 — Non-Medical only
 
+  /// Internal English codes — never translated. Used for KB lookups,
+  /// Gemini prompts, and Firestore writes.
   String selectedStream = 'Medical';
   String selectedCategory = 'General';
   bool isLoading = false;
 
-  final streams = const ['Medical', 'Non-Medical', 'Commerce', 'Arts'];
-
-  final categories = const ['General', 'OBC', 'SC', 'ST', 'EWS'];
+  final streamCodes = const ['Medical', 'Non-Medical', 'Commerce', 'Arts'];
+  final categoryCodes = const ['General', 'OBC', 'SC', 'ST', 'EWS'];
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final arg = ModalRoute.of(context)?.settings.arguments;
-    if (arg is String && streams.contains(arg)) {
+    if (arg is String && streamCodes.contains(arg)) {
       selectedStream = arg;
+    }
+  }
+
+  /// Resolves a stream English code to its localized display label.
+  String _streamLabel(String code, AppLocalizations t) {
+    switch (code) {
+      case 'Medical':
+        return t.streamMedical;
+      case 'Non-Medical':
+        return t.streamNonMedical;
+      case 'Commerce':
+        return t.streamCommerce;
+      case 'Arts':
+        return t.streamArts;
+      default:
+        return code;
+    }
+  }
+
+  /// Resolves a category English code to its localized display label.
+  String _categoryLabel(String code, AppLocalizations t) {
+    switch (code) {
+      case 'General':
+        return t.categoryGeneral;
+      case 'OBC':
+        return t.categoryOBC;
+      case 'SC':
+        return t.categorySC;
+      case 'ST':
+        return t.categoryST;
+      case 'EWS':
+        return t.categoryEWS;
+      default:
+        return code;
     }
   }
 
@@ -43,6 +82,8 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
     required String stream,
     required String location,
     String? class12Marks,
+    int? neetScore,
+    double? jeePercentile,
   }) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -53,16 +94,20 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
       'category': category,
       'state': location,
       'class12Marks': class12Marks,
+      'neetScore': neetScore,
+      'jeePercentile': jeePercentile,
       'lastActive': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
   }
 
   Future<void> analyseCareer() async {
+    final t = AppLocalizations.of(context)!;
+
     if (interestsController.text.trim().isEmpty ||
         incomeController.text.trim().isEmpty ||
         locationController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all required fields')),
+        SnackBar(content: Text(t.errorRequiredFields)),
       );
       return;
     }
@@ -71,13 +116,44 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
     final incomeLakhs = double.tryParse(incomeText);
     if (incomeLakhs == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Enter income as a number (e.g. 3 for ₹3 lakh)'),
-        ),
+        SnackBar(content: Text(t.errorIncomeFormat)),
       );
       return;
     }
-    final annualIncomeRupees = (incomeLakhs * 100000).round();
+    // Auto-detect: if user typed > 1000, assume they entered rupees directly,
+    // not lakhs (protects against users typing "300000" instead of "3")
+    final annualIncomeRupees = incomeLakhs > 1000
+        ? incomeLakhs.round()
+        : (incomeLakhs * 100000).round();
+
+    // Parse optional entrance exam scores — only relevant for the matching stream
+    int? neetScore;
+    double? jeePercentile;
+    if (selectedStream == 'Medical') {
+      final s = neetScoreController.text.trim();
+      if (s.isNotEmpty) {
+        neetScore = int.tryParse(s);
+        if (neetScore == null || neetScore < 0 || neetScore > 720) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(t.errorNeetRange)),
+          );
+          return;
+        }
+      }
+    } else if (selectedStream == 'Non-Medical') {
+      final s = jeePercentileController.text.trim();
+      if (s.isNotEmpty) {
+        jeePercentile = double.tryParse(s);
+        if (jeePercentile == null ||
+            jeePercentile < 0 ||
+            jeePercentile > 100) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(t.errorJeeRange)),
+          );
+          return;
+        }
+      }
+    }
 
     setState(() => isLoading = true);
 
@@ -91,6 +167,8 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
         class12Marks: marksController.text.trim().isEmpty
             ? null
             : marksController.text.trim(),
+        neetScore: neetScore,
+        jeePercentile: jeePercentile,
       );
 
       final gemini = GeminiService();
@@ -107,6 +185,8 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
         class12Marks: marksController.text.trim().isEmpty
             ? null
             : '${marksController.text.trim()}%',
+        neetScore: neetScore,
+        jeePercentile: jeePercentile,
       );
 
       if (!mounted) return;
@@ -120,9 +200,9 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() => isLoading = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(t.errorPrefix(e.toString()))),
+      );
     }
   }
 
@@ -134,19 +214,23 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
     budgetController.dispose();
     locationController.dispose();
     marksController.dispose();
+    neetScoreController.dispose();
+    jeePercentileController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
-        title: const Text(
-          'Tell Us About Yourself',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          t.profileTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(
@@ -154,9 +238,9 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'PathSaathi needs a few details\nto find your best career match.',
-              style: TextStyle(
+            Text(
+              t.profileIntro,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF1A1A2E),
@@ -165,71 +249,95 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
             ),
             const SizedBox(height: 24),
 
-            _buildLabel('Your Stream *'),
+            _buildLabel(t.fieldStream),
             const SizedBox(height: 6),
             _buildDropdown<String>(
               value: selectedStream,
-              items: streams,
+              items: streamCodes,
+              labelFor: (code) => _streamLabel(code, t),
               onChanged: (v) {
                 if (v != null) setState(() => selectedStream = v);
               },
             ),
             const SizedBox(height: 16),
 
-            _buildLabel('Your Interests *'),
+            _buildLabel(t.fieldInterests),
             _buildField(
               controller: interestsController,
-              hint: 'e.g. helping people, computers, drawing, science',
+              hint: t.hintInterests,
               maxLines: 2,
             ),
             const SizedBox(height: 16),
 
-            _buildLabel('Your Strengths'),
+            _buildLabel(t.fieldStrengths),
             _buildField(
               controller: strengthsController,
-              hint: 'e.g. good at maths, creative, good communicator',
+              hint: t.hintStrengths,
               maxLines: 2,
             ),
             const SizedBox(height: 16),
 
-            _buildLabel('Class 12 Marks (%)'),
+            _buildLabel(t.fieldMarks),
             _buildField(
               controller: marksController,
-              hint: 'e.g. 72',
+              hint: t.hintMarks,
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 16),
 
-            _buildLabel('Annual Family Income (in ₹ lakh) *'),
+            // ── Conditional entrance exam field ──────────────────
+            // Medical → NEET score, Non-Medical → JEE percentile
+            if (selectedStream == 'Medical') ...[
+              _buildLabel(t.fieldNeet),
+              _buildField(
+                controller: neetScoreController,
+                hint: t.hintNeet,
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 16),
+            ] else if (selectedStream == 'Non-Medical') ...[
+              _buildLabel(t.fieldJee),
+              _buildField(
+                controller: jeePercentileController,
+                hint: t.hintJee,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+
+            _buildLabel(t.fieldIncome),
             _buildField(
               controller: incomeController,
-              hint: 'e.g. 3 for ₹3 lakh, 8 for ₹8 lakh',
+              hint: t.hintIncome,
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 16),
 
-            _buildLabel('Category *'),
+            _buildLabel(t.fieldCategory),
             const SizedBox(height: 6),
             _buildDropdown<String>(
               value: selectedCategory,
-              items: categories,
+              items: categoryCodes,
+              labelFor: (code) => _categoryLabel(code, t),
               onChanged: (v) {
                 if (v != null) setState(() => selectedCategory = v);
               },
             ),
             const SizedBox(height: 16),
 
-            _buildLabel('Education Budget per Year'),
+            _buildLabel(t.fieldBudget),
             _buildField(
               controller: budgetController,
-              hint: 'e.g. 50 thousand, 1 lakh (optional)',
+              hint: t.hintBudget,
             ),
             const SizedBox(height: 16),
 
-            _buildLabel('Your City / State *'),
+            _buildLabel(t.fieldLocation),
             _buildField(
               controller: locationController,
-              hint: 'e.g. Chandigarh, Punjab',
+              hint: t.hintLocation,
             ),
             const SizedBox(height: 32),
 
@@ -246,10 +354,10 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
                   ),
                 ),
                 child: isLoading
-                    ? const Row(
+                    ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             width: 18,
                             height: 18,
                             child: CircularProgressIndicator(
@@ -257,13 +365,13 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
                               strokeWidth: 2,
                             ),
                           ),
-                          SizedBox(width: 12),
-                          Text('PathSaathi is analysing...'),
+                          const SizedBox(width: 12),
+                          Text(t.submitAnalysing),
                         ],
                       )
-                    : const Text(
-                        'Find My Career Path →',
-                        style: TextStyle(
+                    : Text(
+                        t.submitFindPath,
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                         ),
@@ -319,9 +427,12 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
     );
   }
 
+  /// Dropdown that displays localized labels but stores English codes.
+  /// `labelFor` maps code → user-facing string.
   Widget _buildDropdown<T>({
     required T value,
     required List<T> items,
+    required String Function(T) labelFor,
     required ValueChanged<T?> onChanged,
   }) {
     return Container(
@@ -337,7 +448,8 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
           isExpanded: true,
           items: items
               .map(
-                (s) => DropdownMenuItem<T>(value: s, child: Text(s.toString())),
+                (code) =>
+                    DropdownMenuItem<T>(value: code, child: Text(labelFor(code))),
               )
               .toList(),
           onChanged: onChanged,

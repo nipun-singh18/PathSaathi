@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/gemini_service.dart';
+import '../l10n/app_localizations.dart';
 
 class VisualRoadmapScreen extends StatefulWidget {
   const VisualRoadmapScreen({super.key});
@@ -26,13 +27,15 @@ class _VisualRoadmapScreenState extends State<VisualRoadmapScreen> {
     if (_initialised) return;
     _initialised = true;
 
+    final t = AppLocalizations.of(context)!;
+
     final career =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
     if (career == null) {
       setState(() {
         _loading = false;
-        _error = 'No career data received.';
+        _error = t.errorNoCareerData;
       });
       return;
     }
@@ -42,6 +45,7 @@ class _VisualRoadmapScreenState extends State<VisualRoadmapScreen> {
   }
 
   Future<void> _fetchRoadmap() async {
+    final t = AppLocalizations.of(context)!;
     try {
       final gemini = GeminiService();
       final result = await gemini.getRoadmap(
@@ -56,7 +60,7 @@ class _VisualRoadmapScreenState extends State<VisualRoadmapScreen> {
       if (phases is! List || phases.isEmpty) {
         setState(() {
           _loading = false;
-          _error = 'Could not generate a roadmap. Please try again.';
+          _error = t.errorRoadmapGeneration;
         });
         return;
       }
@@ -69,7 +73,7 @@ class _VisualRoadmapScreenState extends State<VisualRoadmapScreen> {
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = 'Something went wrong: $e';
+        _error = t.errorPrefix(e.toString());
       });
     }
   }
@@ -92,26 +96,29 @@ class _VisualRoadmapScreenState extends State<VisualRoadmapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
-        title: const Text(
-          'Your Roadmap',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          t.roadmapTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: _loading
-          ? const Center(
+          ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
                   Text(
-                    'Generating your personalised roadmap...',
-                    style: TextStyle(color: Colors.grey),
+                    t.roadmapLoading,
+                    style: const TextStyle(color: Colors.grey),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
@@ -127,11 +134,11 @@ class _VisualRoadmapScreenState extends State<VisualRoadmapScreen> {
                 ),
               ),
             )
-          : _buildRoadmap(),
+          : _buildRoadmap(t),
     );
   }
 
-  Widget _buildRoadmap() {
+  Widget _buildRoadmap(AppLocalizations t) {
     final phases = _roadmap!['roadmap'] as List;
     final exams = (_roadmap!['entrance_exams'] as List?) ?? [];
     final skills = (_roadmap!['key_skills'] as List?) ?? [];
@@ -154,7 +161,7 @@ class _VisualRoadmapScreenState extends State<VisualRoadmapScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _careerName,
+                  _careerName, // career name stays English by design
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -163,7 +170,7 @@ class _VisualRoadmapScreenState extends State<VisualRoadmapScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '${_completed.length} of ${_totalMilestones()} milestones complete',
+                  t.milestonesProgress(_completed.length, _totalMilestones()),
                   style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                 ),
                 const SizedBox(height: 8),
@@ -185,9 +192,9 @@ class _VisualRoadmapScreenState extends State<VisualRoadmapScreen> {
           const SizedBox(height: 16),
 
           // Phase timeline
-          const Text(
-            'Your Journey',
-            style: TextStyle(
+          Text(
+            t.yourJourney,
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Color(0xFF1A1A2E),
@@ -204,7 +211,7 @@ class _VisualRoadmapScreenState extends State<VisualRoadmapScreen> {
 
             return _phaseCard(
               phaseIndex: phaseIndex,
-              phaseName: phaseName,
+              phaseName: phaseName, // already in user's language (Gemini)
               phaseDuration: phaseDuration,
               milestones: milestones,
               isLast: isLast,
@@ -214,9 +221,9 @@ class _VisualRoadmapScreenState extends State<VisualRoadmapScreen> {
           const SizedBox(height: 16),
 
           // Summary info
-          if (exams.isNotEmpty) _infoCard('Entrance Exams', exams.join(' • ')),
-          if (skills.isNotEmpty) _infoCard('Key Skills', skills.join(' • ')),
-          if (cost.isNotEmpty) _infoCard('Cost Summary', cost),
+          if (exams.isNotEmpty) _infoCard(t.summaryEntranceExams, exams.join(' • ')),
+          if (skills.isNotEmpty) _infoCard(t.summaryKeySkills, skills.join(' • ')),
+          if (cost.isNotEmpty) _infoCard(t.summaryCostSummary, cost),
 
           const SizedBox(height: 20),
         ],

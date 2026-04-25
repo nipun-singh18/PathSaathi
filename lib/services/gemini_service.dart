@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'knowledge_base.dart';
+import 'language_service.dart';
 
 class GeminiService {
   late final GenerativeModel _model;
@@ -13,24 +14,57 @@ class GeminiService {
     );
   }
 
+  /// Appended to every prompt — instructs Gemini what language to respond in.
+  /// In Hindi mode: respond in Hindi but keep technical terms English.
+  /// In English mode: returns empty string (no extra instruction needed).
+  String _languageInstruction() {
+    if (!LanguageService.instance.isHindi) return '';
+    return '''
+
+
+═══════════════════════════════════════════════
+LANGUAGE INSTRUCTION
+═══════════════════════════════════════════════
+Respond entirely in clear, simple Hindi using Devanagari script for all
+explanatory text (the "why" sentences, descriptions, advice, eligibility
+reasons, phase names, milestone descriptions).
+
+Keep these in English exactly as given (do NOT transliterate or translate):
+- Career names (MBBS, B.Sc Nursing, Pharmacy, Engineering, etc.)
+- Exam names (NEET, JEE, JEE Main, JEE Advanced, BITSAT)
+- Institution names (AIIMS, IIT, NIT, IIIT)
+- Scheme names (PM-USP, NSP, Vidyalakshmi, etc.)
+- Category codes (SC, ST, OBC, EWS)
+- Currency notation (₹, ₹3,00,000, ₹60K)
+- URLs (scholarships.gov.in, etc.)
+- All numbers, percentages, and JSON keys
+
+The OUTPUT JSON STRUCTURE must remain exactly as specified. Only the
+human-readable string values get translated to Hindi.
+''';
+  }
+
   // ── PROMPT 1: Career Matching ──────────────────────────
-  //
-  // Now grounded in verified career data from the knowledge base.
-  // Gemini picks FROM a real list — it cannot invent careers or numbers.
-  //
   Future<Map<String, dynamic>> getCareerRecommendations({
     required String stream,
     required String interests,
     required String strengths,
     required String budget,
     required String location,
-    required String category, // e.g. "General", "OBC", "SC", "ST", "EWS"
-    required int annualIncome, // in rupees
-    String? class12Marks, // e.g. "72%" — optional but helps scoring
+    required String category,
+    required int annualIncome,
+    String? class12Marks,
+    int? neetScore,
+    double? jeePercentile,
   }) async {
-    // Pull the verified career list for this stream (stripped for token efficiency)
     final verifiedCareers = KnowledgeBase.instance.careersForPrompt(stream);
     final careersJson = jsonEncode(verifiedCareers);
+
+    final entranceContext = _buildEntranceContext(
+      stream: stream,
+      neetScore: neetScore,
+      jeePercentile: jeePercentile,
+    );
 
     final prompt =
         '''
@@ -49,6 +83,9 @@ STUDENT PROFILE
 - Stated budget for education: $budget per year
 - Location: $location
 
+ENTRANCE EXAM:
+$entranceContext
+
 ═══════════════════════════════════════════════
 VERIFIED CAREER DATABASE (choose ONLY from this list)
 ═══════════════════════════════════════════════
@@ -66,13 +103,25 @@ For each, compute a Reality Score (0–100) using the rubric below.
 REALITY SCORE RUBRIC — compute four sub-scores, then combine:
 
 1. ACADEMIC FIT (0–100)
-   - If entrance_exam requires NEET and student has no marks info: score 50
-   - If student's class 12 marks < (percent_12th_min - 10): score ≤ 20
-   - If student meets the cutoff comfortably: score 70–90
-   - If student exceeds cutoff significantly: score 90–100
+   - If career requires NEET AND student gave NEET score:
+       Use the NEET CUTOFF REFERENCE above (with category adjustments).
+       Comfortably above the cutoff for this career → 80–95
+       Right at the cutoff (±20 marks) → 60–75
+       Below cutoff but within reach (<60 marks) → 30–50
+       Significantly below (>100 marks gap) → ≤20
+   - If career requires JEE AND student gave JEE percentile:
+       Use the JEE CUTOFF REFERENCE above.
+       Above the tier's percentile → 80–95
+       Below by <2 percentile → 50–70
+       Below by >5 percentile → ≤30
+   - If career has no entrance exam (Commerce, Arts, allied health):
+       Use class 12 marks vs percent_12th_min from the verified data.
+       Meets cutoff comfortably → 70–90
+       Below cutoff → ≤30
+   - If no entrance score given, score from class 12 marks only (50 if marks missing too).
 
 2. FINANCIAL FIT (0–100)
-   - Compute total 4-year cost using govt_cost_yr (min) × duration_years
+   - Compute total cost using govt_cost_yr (min) × duration_years
    - If total cost < (annual_income × 2): score 80–100
    - If total cost between (income × 2) and (income × 4): score 50–70
    - If total cost > (income × 4) with no scholarships: score ≤ 30
@@ -90,10 +139,11 @@ COMPOSITE: weighted average (30% academic, 30% financial, 20% payoff, 20% intere
 
 HARD FLOOR RULE:
 If ANY sub-score is below 20, composite CANNOT exceed 40.
-This prevents "MBBS is a great match!" for a student who can't afford it.
+This prevents "MBBS is a great match!" for a student who can't afford it OR
+"MBBS great fit!" for a student whose NEET score is way below cutoff.
 
 HONESTY RULE:
-The "why" field MUST be honest, not motivational. Say "Financially out of reach without major scholarship" if true. Say "Strong fit — government college cost is affordable" if true. Never say "great choice!" or "pursue your dreams." Indian students deserve real talk.
+The "why" field MUST be honest, not motivational. Say "NEET score 100 marks below SC cutoff for govt MBBS" if true. Say "Strong fit — NEET 310 comfortably clears govt nursing cutoff" if true. Never say "great choice!" or "pursue your dreams." Indian students deserve real talk.
 
 ═══════════════════════════════════════════════
 OUTPUT — STRICT JSON ONLY
@@ -118,22 +168,65 @@ RULES:
 - Exactly 5 careers
 - Career name must match the verified list exactly
 - No markdown, no extra text, JSON only
-- Sort by reality_score descending
+- Sort by reality_score descending${_languageInstruction()}
 ''';
 
     return await _callGemini(prompt, fallback: {"recommendations": []});
   }
 
+  /// Builds the entrance-exam context block injected into the recommendation prompt.
+  String _buildEntranceContext({
+    required String stream,
+    int? neetScore,
+    double? jeePercentile,
+  }) {
+    if (stream == 'Medical' && neetScore != null) {
+      final tier = KnowledgeBase.instance.tierForNeetScore(neetScore);
+      return '''
+- NEET Score: $neetScore / 720
+- Realistic college tier based on this score: $tier
+
+NEET CUTOFF REFERENCE (use for academic_fit scoring):
+- 650+ → AIIMS / Top Govt MBBS  (Gen)
+- 550–650 → State Govt MBBS  (Gen 550+, OBC 500+, SC/ST 400+)
+- 450–550 → Private MBBS or Govt BDS  (Gen 450+)
+- 380–500 → AYUSH (BAMS/BHMS)  (NEET 350–450)
+- 200–380 → Govt Nursing & Allied Health
+- Below 200 → B.Sc Life Sciences (no NEET needed)
+
+CATEGORY ADJUSTMENTS:
+- SC: ~150 marks effective advantage  (SC 400 ≈ Gen 550)
+- OBC-NCL: ~50 marks advantage
+- EWS: ~20–30 marks advantage''';
+    }
+
+    if (stream == 'Non-Medical' && jeePercentile != null) {
+      final tier = KnowledgeBase.instance.tierForJeePercentile(jeePercentile);
+      return '''
+- JEE Main Percentile: $jeePercentile
+- Realistic college tier based on this percentile: $tier
+
+JEE CUTOFF REFERENCE (use for academic_fit scoring):
+- 99.5+ → Top IIT (Bombay/Delhi/Madras) via JEE Advanced
+- 99–99.5 → Mid-tier IIT (Roorkee/KGP/Guwahati)
+- 98–99 → Newer IIT (BHU/Patna/Mandi)
+- 97–99 → Top NIT (Trichy/Warangal/Surathkal)
+- 93–97 → Mid-tier NIT, IIIT Hyderabad
+- 88–93 → Newer NIT, BITS, DTU/NSUT
+- 75–88 → State Govt Engineering, VIT, SRM
+- 60–75 → Mid-tier private colleges
+- Below 60 → Local private / B.Sc route''';
+    }
+
+    return '- (No entrance exam score provided — score academic_fit from class 12 marks only)';
+  }
+
   // ── PROMPT 2: Roadmap Generator ────────────────────────
-  //
-  // Pulls the full career record for grounded, realistic phases.
-  //
   Future<Map<String, dynamic>> getRoadmap({
     required String careerName,
     required String educationLevel,
     required String budget,
   }) async {
-    // Fetch the verified career record
     final career = KnowledgeBase.instance.careerByName(careerName);
     final careerContext = career != null
         ? jsonEncode({
@@ -194,25 +287,19 @@ RULES:
 - 4–6 phases covering the full journey
 - Milestones are SPECIFIC (e.g. "Register for NEET-UG on nta.ac.in by Feb"), not vague ("study hard")
 - No motivational text
-- No markdown, JSON only
+- No markdown, JSON only${_languageInstruction()}
 ''';
 
     return await _callGemini(prompt, fallback: {"roadmap": []});
   }
 
   // ── PROMPT 3: Government Schemes ───────────────────────
-  //
-  // HARDENED: We no longer let Gemini drop schemes. The prompt enforces
-  // exact output count. A Dart-side safety net fills in any missing
-  // schemes so the user ALWAYS sees all pre-filtered eligible schemes.
-  //
   Future<Map<String, dynamic>> getEligibleSchemes({
     required int annualIncome,
     required String category,
     required String state,
     required String career,
   }) async {
-    // Pre-filter schemes using verified data
     final eligible = KnowledgeBase.instance.eligibleSchemes(
       annualIncome: annualIncome,
       category: category,
@@ -222,7 +309,6 @@ RULES:
       return {"eligible_schemes": []};
     }
 
-    // Build the prompt payload with consistent field names
     final schemesForPrompt = eligible.take(10).map((s) {
       return {
         'scheme_name': s['name'],
@@ -283,7 +369,7 @@ OUTPUT — STRICT JSON ONLY
 STRICT RULES:
 - Output list length must equal input list length (${schemesForPrompt.length} schemes)
 - Copy scheme_name, benefit_amount, deadline, apply_link VERBATIM
-- No markdown fences, JSON only
+- No markdown fences, JSON only${_languageInstruction()}
 ''';
 
     final result = await _callGemini(
@@ -291,20 +377,21 @@ STRICT RULES:
       fallback: {"eligible_schemes": []},
     );
 
-    // Safety net: if Gemini still drops schemes, fill in the missing ones
-    // with a default reason so the user sees all of them.
     final returned = (result['eligible_schemes'] as List?) ?? [];
     if (returned.length < schemesForPrompt.length) {
       final returnedNames = returned
           .map((r) => (r as Map)['scheme_name']?.toString() ?? '')
           .toSet();
+      // Fallback eligibility reason — language-aware
+      final fallbackReason = LanguageService.instance.isHindi
+          ? 'आपकी आय और श्रेणी के आधार पर आप इस योजना के लिए पात्र हैं।'
+          : 'You qualify for this scheme based on your income and category.';
       for (final s in schemesForPrompt) {
         final name = s['scheme_name']?.toString() ?? '';
         if (!returnedNames.contains(name)) {
           returned.add({
             'scheme_name': name,
-            'eligibility_reason':
-                'You qualify for this scheme based on your income and category.',
+            'eligibility_reason': fallbackReason,
             'benefit_amount': s['amount'],
             'deadline': s['deadline'],
             'apply_link': s['apply_link'],
@@ -317,8 +404,7 @@ STRICT RULES:
     return result;
   }
 
-  // ── PROMPT 4: Alternate Paths (for "What if I can't afford this?") ──
-  //
+  // ── PROMPT 4: Alternate Paths ──────────────────────────
   Future<Map<String, dynamic>> getAlternatePaths({
     required String stream,
     required String originalCareer,
@@ -326,7 +412,6 @@ STRICT RULES:
     required String category,
     required int annualIncome,
   }) async {
-    // Filter careers within budget before asking Gemini
     final all = KnowledgeBase.instance.careersForPrompt(stream);
     final affordable = all.where((c) {
       final maxCost = c['govt_cost_yr_max'];
@@ -381,7 +466,7 @@ OUTPUT — STRICT JSON ONLY
 RULES:
 - Exactly 3 careers
 - Must be genuinely within budget
-- No markdown, JSON only
+- No markdown, JSON only${_languageInstruction()}
 ''';
 
     return await _callGemini(prompt, fallback: {"alternate_careers": []});
@@ -399,7 +484,6 @@ RULES:
         final response = await _model.generateContent(content);
         final text = response.text ?? '';
 
-        // Clean markdown if Gemini adds it despite instructions
         var cleaned = text.trim();
         if (cleaned.startsWith('```')) {
           cleaned = cleaned
@@ -412,7 +496,6 @@ RULES:
       } catch (e) {
         // ignore: avoid_print
         print('Gemini error (attempt ${attempt + 1}): $e');
-        // Retry on 503 (overloaded) — wait and try again
         if (attempt < retries && e.toString().contains('503')) {
           await Future.delayed(Duration(seconds: 2 * (attempt + 1)));
           continue;

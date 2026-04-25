@@ -1,0 +1,21 @@
+"GOVERNMENT SCHEMES DATABASE | Tiya · Day 2 — 15+ Schemes, Firebase Ready",,,,,,,,
+Each scheme has income limit + category — these 2 fields power the Gemini eligibility filter. Hardik feeds this into Firebase. Tanisha uses it in the scheme eligibility prompt.,,,,,,,,
+NATIONAL SCHEMES,,,,,,,,
+#,Scheme Name,Category Eligible,Income Limit (Annual),Amount (per year),Stream Applicable,Deadline,Application Link,Notes
+1,Post Matric Scholarship (SC/ST/OBC),SC / ST / OBC,Below ₹2.5L,₹7K–12K + tuition,All Streams (UG/PG),Oct–Nov annually,scholarships.gov.in,Apply via NSP portal. One of the highest-volume schemes.
+2,Central Sector Scheme of Scholarship (CSSS),General / Meritorious,Below ₹8L,₹10K/yr UG + ₹20K PG,"Science, Commerce, Humanities",Sep–Oct annually,scholarships.gov.in,Top 1% of each stream in 12th boards. Merit based.
+3,PM USHA Scholarship (PM-USP),SC / ST / OBC / EWS,Below ₹6L,Up to ₹60K/yr,All UG/PG,Varies by state,pfms.nic.in,Routed through state governments. Check state portal.
+4,National Scholarship Portal (NSP) — Umbrella,All categories,₹2.5L–8L (varies per scheme),₹5K–75K depending on level,All Streams,Aug–Oct annually,scholarships.gov.in,Single portal for 50+ central and state schemes.
+5,AICTE Pragati Scholarship (Girls in Tech),Girl students in tech,Below ₹8L,₹50K/yr + ₹30K one-time,Engineering / Pharmacy,Aug–Sep annually,aicte-india.org,One per family. Only for AICTE-approved institutions.
+6,AICTE Saksham Scholarship (PwD),Persons with Disability,Below ₹8L,₹50K/yr + ₹30K one-time,Technical Education,Aug–Sep annually,aicte-india.org,Valid disability certificate required (40%+ disability).
+7,Maulana Azad National Scholarship (Minorities),"Minority communities (Muslim, Christian, Sikh, Buddhist, Jain, Parsi)",Below ₹2L,₹12K–20K/yr,UG / PG,October,maef.nic.in,Ministry of Minority Affairs. Separate portal from NSP.
+8,INSPIRE Scholarship (DST),Top 1% in 12th board,No income limit,₹80K/yr,B.Sc / BS in Natural Sciences only,September,online-inspire.gov.in,Only for students pursuing pure science (not engg/medical)
+9,Ishan Uday (NE Students — UGC),North-East state domicile,Below ₹4.5L,"₹5,400–7,800/month",General degree colleges (not IIT/NIT/central univ),Application ongoing,ugc.ac.in,For students from 8 North-Eastern states.
+10,PM Scholarship for RPF / CRPF Wards,Wards of RPF / CRPF / ex-servicemen,Below ₹6L,"₹2,500–3,000/month",All professional UG courses,Twice a year,ksb.gov.in,Kendriya Sainik Board manages this.
+11,Punjab Post Matric Scholarship (SC),SC (Punjab domicile),Below ₹2.5L,Full tuition + maintenance allowance,All Streams,Oct–Nov,punjab.gov.in / NSP,Must have Punjab domicile certificate.
+12,Punjab EWS Scholarship,EWS General (Punjab),Below ₹8L,Up to ₹25K/yr,All Streams,Aug–Sep,punjab.gov.in,EWS certificate from Punjab Revenue Dept required.
+13,Haryana Post Matric Scholarship (SC/BC),SC / BC (Haryana domicile),Below ₹2.5L,₹5K–15K/yr + tuition,All Streams,After 12th results,haryana.gov.in / NSP,Apply via Haryana welfare portal or NSP.
+14,Himachal Pradesh Merit Scholarship,"HP domicile, merit",No limit for pure merit,₹5K–10K/yr,All Streams,Sep,hpepass.nic.in,HP Education dept manages. Separate state portal.
+15,Vidyalakshmi Education Loan Portal,All students — loan scheme,No income bar for loan,Loan: ₹4L–20L+,All Streams,Apply anytime,vidyalakshmi.co.in,"Bank loan, not grant. 34 banks linked. Subsidised interest for below ₹4.5L income."
+16,Dr. Ambedkar Post Matric Scholarship (OBC/EBC),OBC / EBC,Below ₹1L (EBC) / ₹3L (OBC),₹5K–10K + tuition,All Streams,Sep–Oct,socialjustice.gov.in / NSP,Ministry of Social Justice scheme.
+17,PFMS Direct Benefit Transfer Tracker,All (DBT verification),Varies per scheme,Varies,All,Scheme-specific,pfms.nic.in,Use PFMS to track scholarship payment status for any scheme.

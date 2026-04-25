@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 
-/// Loads careers.json, schemes.json, questions.json once at app start
-/// and exposes helpers for Gemini prompts and UI filtering.
+/// Loads careers.json, schemes.json, questions.json, jee_neet_data.json
+/// once at app start and exposes helpers for Gemini prompts and UI filtering.
 class KnowledgeBase {
   KnowledgeBase._();
   static final KnowledgeBase instance = KnowledgeBase._();
@@ -10,6 +10,7 @@ class KnowledgeBase {
   List<Map<String, dynamic>> _careers = [];
   List<Map<String, dynamic>> _schemes = [];
   Map<String, List<Map<String, dynamic>>> _questions = {};
+  Map<String, dynamic> _jeeNeet = {};
   bool _loaded = false;
 
   bool get isLoaded => _loaded;
@@ -23,6 +24,9 @@ class KnowledgeBase {
     final questionsRaw = await rootBundle.loadString(
       'assets/data/questions.json',
     );
+    final jeeNeetRaw = await rootBundle.loadString(
+      'assets/data/jee_neet_data.json',
+    );
 
     _careers = List<Map<String, dynamic>>.from(jsonDecode(careersRaw));
     _schemes = List<Map<String, dynamic>>.from(jsonDecode(schemesRaw));
@@ -31,6 +35,8 @@ class KnowledgeBase {
     _questions = qDecoded.map(
       (k, v) => MapEntry(k, List<Map<String, dynamic>>.from(v as List)),
     );
+
+    _jeeNeet = jsonDecode(jeeNeetRaw) as Map<String, dynamic>;
 
     _loaded = true;
   }
@@ -120,4 +126,34 @@ class KnowledgeBase {
   List<Map<String, dynamic>> questionsForStream(String stream) {
     return _questions[stream] ?? [];
   }
+
+  // -------------------- JEE / NEET TIER LOOKUPS --------------------
+
+  /// Returns the realistic tier label for a given NEET score (out of 720).
+  /// Helps Gemini score academic_fit when student gives a NEET score.
+  String tierForNeetScore(int score) {
+    if (score >= 650) return 'Top Govt MBBS (650-720)';
+    if (score >= 550) return 'State Govt MBBS / BDS (450-650)';
+    if (score >= 450) return 'Private MBBS / Govt BDS (450-550)';
+    if (score >= 380) return 'AYUSH / BAMS / BHMS (300-500)';
+    if (score >= 200) return 'Govt Nursing & Allied Health (200-380)';
+    if (score >= 150) return 'Private Nursing / Paramedical (150-250)';
+    return 'Below cutoff — B.Sc Life Sciences / pivot to non-medical';
+  }
+
+  /// Returns the realistic tier label for a given JEE Main percentile.
+  String tierForJeePercentile(double percentile) {
+    if (percentile >= 99.5) return 'Top IIT (Bombay/Delhi/Madras CSE)';
+    if (percentile >= 99) return 'IIT (Roorkee/KGP/Hyderabad)';
+    if (percentile >= 98) return 'Newer IIT (BHU/Patna/Mandi)';
+    if (percentile >= 97) return 'Top NITs (Trichy/Warangal/Surathkal)';
+    if (percentile >= 93) return 'Mid-tier NITs / IIIT Hyderabad';
+    if (percentile >= 88) return 'Newer NITs / BITS / DTU';
+    if (percentile >= 75) return 'State Govt Engineering / VIT / SRM';
+    if (percentile >= 60) return 'Mid-tier private / state CET';
+    return 'Local private colleges / B.Sc route / re-attempt';
+  }
+
+  /// Returns the full JEE/NEET dataset (for advanced UI features).
+  Map<String, dynamic> get jeeNeetData => _jeeNeet;
 }

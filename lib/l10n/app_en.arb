@@ -1,0 +1,209 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "PathSaathi",
+  "@appTitle": {
+    "description": "App name (do not translate — keep as PathSaathi)"
+  },
+
+  "tagline": "I CAN, AND I WILL.",
+  "getStarted": "Get Started",
+
+  "languageEnglish": "English",
+  "languageHindi": "हिन्दी",
+  "switchLanguage": "Language",
+
+  "loading": "Loading...",
+  "errorGeneric": "Something went wrong. Please try again.",
+  "back": "Back",
+  "next": "Next",
+  "submit": "Submit",
+  "cancel": "Cancel",
+
+  "chooseYourStream": "Choose Your Stream",
+  "streamSelectionSubtitle": "AI will build your personalized roadmap",
+
+  "streamMedical": "Medical",
+  "streamNonMedical": "Non-Medical",
+  "streamCommerce": "Commerce",
+  "streamArts": "Arts",
+
+  "streamCardSelect": "Select ✓",
+  "streamCardExplore": "Explore →",
+
+  "profileTitle": "Tell Us About Yourself",
+  "profileIntro": "PathSaathi needs a few details\nto find your best career match.",
+
+  "fieldStream": "Your Stream *",
+  "fieldInterests": "Your Interests *",
+  "fieldStrengths": "Your Strengths",
+  "fieldMarks": "Class 12 Marks (%)",
+  "fieldNeet": "NEET Score (out of 720) — optional",
+  "fieldJee": "JEE Main Percentile — optional",
+  "fieldIncome": "Annual Family Income (in ₹ lakh) *",
+  "fieldCategory": "Category *",
+  "fieldBudget": "Education Budget per Year",
+  "fieldLocation": "Your City / State *",
+
+  "hintInterests": "e.g. helping people, computers, drawing, science",
+  "hintStrengths": "e.g. good at maths, creative, good communicator",
+  "hintMarks": "e.g. 72",
+  "hintNeet": "e.g. 310 — leave blank if not given",
+  "hintJee": "e.g. 87.5 — leave blank if not given",
+  "hintIncome": "e.g. 3 for ₹3 lakh, 8 for ₹8 lakh",
+  "hintBudget": "e.g. 50 thousand, 1 lakh (optional)",
+  "hintLocation": "e.g. Chandigarh, Punjab",
+
+  "categoryGeneral": "General",
+  "categoryOBC": "OBC",
+  "categorySC": "SC",
+  "categoryST": "ST",
+  "categoryEWS": "EWS",
+
+  "submitFindPath": "Find My Career Path →",
+  "submitAnalysing": "PathSaathi is analysing...",
+
+  "errorRequiredFields": "Please fill all required fields",
+  "errorIncomeFormat": "Enter income as a number (e.g. 3 for ₹3 lakh)",
+  "errorNeetRange": "NEET score must be a number between 0 and 720",
+  "errorJeeRange": "JEE percentile must be a number between 0 and 100",
+  "errorPrefix": "Error: {message}",
+  "@errorPrefix": {
+    "placeholders": { "message": { "type": "String" } }
+  }
+  ,
+
+  "recommendationsTitle": "Your Career Matches",
+  "@recommendationsTitle": {
+    "description": "AppBar title on the recommendations list screen"
+  },
+
+  "noRecommendations": "No recommendations found.\nPlease go back and try again.",
+  "@noRecommendations": {
+    "description": "Empty state shown when Gemini returns no results"
+  },
+
+  "scoreHighlySuitable": "Highly Suitable",
+  "scoreModerate": "Moderate",
+  "scoreLowFeasibility": "Low Feasibility",
+  "@scoreHighlySuitable": {
+    "description": "Reality Score band labels (>=71 / 41-70 / <41)"
+  },
+
+  "tapForDetails": "Tap for details →",
+  "@tapForDetails": {
+    "description": "Bottom-right hint on each recommendation card"
+  }
+  ,
+
+  "careerDetailsTitle": "Career Details",
+  "@careerDetailsTitle": {
+    "description": "AppBar title on the career detail screen"
+  },
+
+  "noCareerData": "No career data passed.\nGo back and tap a career card.",
+  "@noCareerData": {
+    "description": "Empty state when career detail screen is opened without args"
+  },
+
+  "scoreModerateFeasibility": "Moderate Feasibility",
+  "@scoreModerateFeasibility": {
+    "description": "Detail-screen variant of the Moderate score band (slightly longer than the list version)"
+  },
+
+  "realityScoreValue": "Reality Score: {score}/100",
+  "@realityScoreValue": {
+    "description": "The Reality Score badge text with score interpolated",
+    "placeholders": { "score": { "type": "int" } }
+  },
+
+  "scoreBreakdownTitle": "Score Breakdown",
+  "@scoreBreakdownTitle": {
+    "description": "Section header above the 4 sub-score bars"
+  },
+
+  "subscoreAcademicFit": "Academic Fit",
+  "subscoreFinancialFit": "Financial Fit",
+  "subscoreEffortPayoff": "Effort vs Payoff",
+  "subscoreInterestMatch": "Interest Match",
+  "@subscoreAcademicFit": {
+    "description": "One of four Reality Score components"
+  },
+
+  "keyFactsTitle": "Key Facts",
+  "@keyFactsTitle": {
+    "description": "Section header above the duration/cutoff/cost facts list"
+  },
+
+  "factDuration": "Duration",
+  "factEntranceExam": "Entrance Exam",
+  "factRealisticCutoff": "Realistic Cutoff",
+  "factCourseCost": "Course Cost",
+  "factExpectedSalary": "Expected Salary",
+  "factEmploymentRate": "Employment Rate",
+
+  "btnViewRoadmap": "View Roadmap",
+  "btnViewSchemes": "View Eligible Schemes",
+  "btnAlternatePaths": "What If I Can't Afford This?"
+  ,
+
+  "processingMessage": "Gemini is analyzing your profile...",
+  "@processingMessage": {
+    "description": "Loading text shown while Gemini call is in progress"
+  },
+
+  "skipLoadingDev": "Skip Loading (Dev Mode)",
+  "@skipLoadingDev": {
+    "description": "Dev shortcut button — should be removed before production"
+  }
+  ,
+
+  "errorNoCareerData": "No career data received.",
+  "@errorNoCareerData": {
+    "description": "Shown on detail screens when navigation lost the career argument"
+  },
+
+  "roadmapTitle": "Your Roadmap",
+  "roadmapLoading": "Generating your personalised roadmap...",
+  "errorRoadmapGeneration": "Could not generate a roadmap. Please try again.",
+  "yourJourney": "Your Journey",
+  "milestonesProgress": "{completed} of {total} milestones complete",
+  "@milestonesProgress": {
+    "placeholders": {
+      "completed": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "summaryEntranceExams": "Entrance Exams",
+  "summaryKeySkills": "Key Skills",
+  "summaryCostSummary": "Cost Summary",
+
+  "schemesTitle": "Eligible Schemes",
+  "schemesLoading": "Finding scholarships you qualify for...",
+  "schemesEmpty": "No matching schemes found.\nTry a different career or check back later.",
+  "schemesQualifyBanner": "{count, plural, =1{You qualify for 1 scheme based on your profile} other{You qualify for {count} schemes based on your profile}}",
+  "@schemesQualifyBanner": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "schemeAmount": "Amount",
+  "schemeDeadline": "Deadline",
+  "schemeApplyAt": "Apply at",
+
+  "alternateTitle": "Affordable Alternatives",
+  "alternateExploring": "Exploring alternatives to",
+  "alternateBudgetQuestion": "What is your maximum annual education budget?",
+  "alternateBudgetHint": "e.g. 1 for ₹1 lakh, 0.5 for ₹50K",
+  "alternateBudgetSuffix": "lakh / year",
+  "alternateBudgetError": "Enter your max budget per year as a number (e.g. 1 for ₹1 lakh)",
+  "alternateFindBtn": "Find Alternatives",
+  "alternateSearching": "Finding alternatives...",
+  "alternateEmpty": "No alternatives found within this budget.\nTry increasing your budget a bit.",
+  "alternateResultsHeader": "{count, plural, =1{1 alternative within your budget} other{{count} alternatives within your budget}}",
+  "@alternateResultsHeader": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "alternateSalaryLabel": "Salary: {value}",
+  "@alternateSalaryLabel": {
+    "placeholders": { "value": { "type": "String" } }
+  }
+  }

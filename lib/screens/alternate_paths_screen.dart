@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/gemini_service.dart';
 import '../services/knowledge_base.dart';
+import '../l10n/app_localizations.dart';
 
 class AlternatePathsScreen extends StatefulWidget {
   const AlternatePathsScreen({super.key});
@@ -13,12 +14,10 @@ class AlternatePathsScreen extends StatefulWidget {
 
 class _AlternatePathsScreenState extends State<AlternatePathsScreen> {
   final budgetController = TextEditingController();
-
   bool _loading = false;
   String? _error;
   List<dynamic> _alternates = [];
   bool _hasSearched = false;
-
   String _originalCareer = '';
   String _stream = '';
   bool _initialised = false;
@@ -29,12 +28,13 @@ class _AlternatePathsScreenState extends State<AlternatePathsScreen> {
     if (_initialised) return;
     _initialised = true;
 
+    final t = AppLocalizations.of(context)!;
+
     final career =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-
     if (career == null) {
       setState(() {
-        _error = 'No career data received. Go back and try again.';
+        _error = t.errorNoCareerData;
       });
       return;
     }
@@ -69,20 +69,15 @@ class _AlternatePathsScreenState extends State<AlternatePathsScreen> {
   }
 
   Future<void> _findAlternatives() async {
+    final t = AppLocalizations.of(context)!;
     final budgetText = budgetController.text.trim();
     final budgetLakhs = double.tryParse(budgetText);
-
     if (budgetLakhs == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Enter your max budget per year as a number (e.g. 1 for ₹1 lakh)',
-          ),
-        ),
+        SnackBar(content: Text(t.alternateBudgetError)),
       );
       return;
     }
-
     final maxBudgetRupees = (budgetLakhs * 100000).round();
 
     setState(() {
@@ -103,7 +98,6 @@ class _AlternatePathsScreenState extends State<AlternatePathsScreen> {
       );
 
       if (!mounted) return;
-
       final list = result['alternate_careers'];
       setState(() {
         _alternates = (list is List) ? list : [];
@@ -113,7 +107,7 @@ class _AlternatePathsScreenState extends State<AlternatePathsScreen> {
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = 'Something went wrong: $e';
+        _error = t.errorPrefix(e.toString());
       });
     }
   }
@@ -126,14 +120,16 @@ class _AlternatePathsScreenState extends State<AlternatePathsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
-        title: const Text(
-          'Affordable Alternatives',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          t.alternateTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(
@@ -162,7 +158,7 @@ class _AlternatePathsScreenState extends State<AlternatePathsScreen> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          'Exploring alternatives to',
+                          t.alternateExploring,
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.orange[800],
@@ -174,7 +170,7 @@ class _AlternatePathsScreenState extends State<AlternatePathsScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    _originalCareer,
+                    _originalCareer, // career name stays English
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -184,12 +180,10 @@ class _AlternatePathsScreenState extends State<AlternatePathsScreen> {
                 ],
               ),
             ),
-
             const SizedBox(height: 20),
-
-            const Text(
-              'What is your maximum annual education budget?',
-              style: TextStyle(
+            Text(
+              t.alternateBudgetQuestion,
+              style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF1A1A2E),
@@ -200,10 +194,10 @@ class _AlternatePathsScreenState extends State<AlternatePathsScreen> {
               controller: budgetController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                hintText: 'e.g. 1 for ₹1 lakh, 0.5 for ₹50K',
+                hintText: t.alternateBudgetHint,
                 hintStyle: TextStyle(color: Colors.grey[400], fontSize: 13),
                 prefixText: '₹ ',
-                suffixText: 'lakh / year',
+                suffixText: t.alternateBudgetSuffix,
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
@@ -244,7 +238,7 @@ class _AlternatePathsScreenState extends State<AlternatePathsScreen> {
                       )
                     : const Icon(Icons.search),
                 label: Text(
-                  _loading ? 'Finding alternatives...' : 'Find Alternatives',
+                  _loading ? t.alternateSearching : t.alternateFindBtn,
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
@@ -252,9 +246,7 @@ class _AlternatePathsScreenState extends State<AlternatePathsScreen> {
                 ),
               ),
             ),
-
             const SizedBox(height: 24),
-
             if (_error != null) ...[
               Text(
                 _error!,
@@ -264,19 +256,19 @@ class _AlternatePathsScreenState extends State<AlternatePathsScreen> {
             ] else if (_loading) ...[
               // Loading handled by button state
             ] else if (_hasSearched && _alternates.isEmpty) ...[
-              const Center(
+              Center(
                 child: Padding(
-                  padding: EdgeInsets.all(24),
+                  padding: const EdgeInsets.all(24),
                   child: Text(
-                    'No alternatives found within this budget.\nTry increasing your budget a bit.',
+                    t.alternateEmpty,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                    style: const TextStyle(fontSize: 14, color: Colors.grey),
                   ),
                 ),
               ),
             ] else if (_alternates.isNotEmpty) ...[
               Text(
-                '${_alternates.length} alternative${_alternates.length == 1 ? '' : 's'} within your budget',
+                t.alternateResultsHeader(_alternates.length),
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
@@ -285,10 +277,9 @@ class _AlternatePathsScreenState extends State<AlternatePathsScreen> {
               ),
               const SizedBox(height: 12),
               ..._alternates.map(
-                (a) => _alternateCard(a as Map<String, dynamic>),
+                (a) => _alternateCard(a as Map<String, dynamic>, t),
               ),
             ],
-
             const SizedBox(height: 20),
           ],
         ),
@@ -296,8 +287,10 @@ class _AlternatePathsScreenState extends State<AlternatePathsScreen> {
     );
   }
 
-  Widget _alternateCard(Map<String, dynamic> alt) {
+  Widget _alternateCard(Map<String, dynamic> alt, AppLocalizations t) {
+    // Career name stays English by design
     final name = alt['career']?.toString() ?? 'Alternative';
+    // why_alternative is in user's language thanks to Gemini
     final why = alt['why_alternative']?.toString() ?? '';
     final cost = alt['cost_estimate']?.toString() ?? '';
     final duration = alt['duration']?.toString() ?? '';
@@ -367,7 +360,7 @@ class _AlternatePathsScreenState extends State<AlternatePathsScreen> {
             children: [
               if (duration.isNotEmpty) _chip(Icons.access_time, duration),
               if (cost.isNotEmpty) _chip(Icons.currency_rupee, cost),
-              if (salary.isNotEmpty) _chip(Icons.work, 'Salary: $salary'),
+              if (salary.isNotEmpty) _chip(Icons.work, t.alternateSalaryLabel(salary)),
             ],
           ),
         ],

@@ -1,0 +1,146 @@
+{
+  "@@locale": "hi",
+
+  "appTitle": "PathSaathi",
+
+  "tagline": "मैं कर सकता हूँ, और मैं करूँगा।",
+  "getStarted": "शुरू करें",
+
+  "languageEnglish": "English",
+  "languageHindi": "हिन्दी",
+  "switchLanguage": "भाषा",
+
+  "loading": "लोड हो रहा है...",
+  "errorGeneric": "कुछ गलत हो गया। कृपया पुनः प्रयास करें।",
+  "back": "वापस",
+  "next": "आगे",
+  "submit": "जमा करें",
+  "cancel": "रद्द करें",
+
+  "chooseYourStream": "अपनी स्ट्रीम चुनें",
+  "streamSelectionSubtitle": "AI आपका व्यक्तिगत रोडमैप तैयार करेगा",
+
+  "streamMedical": "मेडिकल",
+  "streamNonMedical": "नॉन-मेडिकल",
+  "streamCommerce": "कॉमर्स",
+  "streamArts": "आर्ट्स",
+
+  "streamCardSelect": "चयनित ✓",
+  "streamCardExplore": "देखें →",
+
+  "profileTitle": "अपने बारे में बताएं",
+  "profileIntro": "PathSaathi को सबसे अच्छा करियर मैच\nखोजने के लिए कुछ जानकारी चाहिए।",
+
+  "fieldStream": "आपकी स्ट्रीम *",
+  "fieldInterests": "आपकी रुचियाँ *",
+  "fieldStrengths": "आपकी ताकतें",
+  "fieldMarks": "12वीं के अंक (%)",
+  "fieldNeet": "NEET स्कोर (720 में से) — वैकल्पिक",
+  "fieldJee": "JEE मेन परसेंटाइल — वैकल्पिक",
+  "fieldIncome": "पारिवारिक वार्षिक आय (₹ लाख में) *",
+  "fieldCategory": "श्रेणी *",
+  "fieldBudget": "प्रति वर्ष शिक्षा बजट",
+  "fieldLocation": "आपका शहर / राज्य *",
+
+  "hintInterests": "जैसे लोगों की मदद, कंप्यूटर, ड्राइंग, विज्ञान",
+  "hintStrengths": "जैसे गणित में अच्छे, रचनात्मक, अच्छे वक्ता",
+  "hintMarks": "जैसे 72",
+  "hintNeet": "जैसे 310 — न दिया हो तो खाली छोड़ें",
+  "hintJee": "जैसे 87.5 — न दिया हो तो खाली छोड़ें",
+  "hintIncome": "जैसे ₹3 लाख के लिए 3, ₹8 लाख के लिए 8",
+  "hintBudget": "जैसे 50 हज़ार, 1 लाख (वैकल्पिक)",
+  "hintLocation": "जैसे चंडीगढ़, पंजाब",
+
+  "categoryGeneral": "सामान्य",
+  "categoryOBC": "OBC",
+  "categorySC": "SC",
+  "categoryST": "ST",
+  "categoryEWS": "EWS",
+
+  "submitFindPath": "मेरा करियर पथ खोजें →",
+  "submitAnalysing": "PathSaathi विश्लेषण कर रहा है...",
+
+  "errorRequiredFields": "कृपया सभी आवश्यक फ़ील्ड भरें",
+  "errorIncomeFormat": "आय एक संख्या के रूप में दर्ज करें (जैसे ₹3 लाख के लिए 3)",
+  "errorNeetRange": "NEET स्कोर 0 से 720 के बीच होना चाहिए",
+  "errorJeeRange": "JEE परसेंटाइल 0 से 100 के बीच होना चाहिए",
+  "errorPrefix": "त्रुटि: {message}"
+,
+
+  "recommendationsTitle": "आपके करियर मैच",
+
+  "noRecommendations": "कोई सिफारिश नहीं मिली।\nकृपया वापस जाकर पुनः प्रयास करें।",
+
+  "scoreHighlySuitable": "अत्यंत उपयुक्त",
+  "scoreModerate": "मध्यम",
+  "scoreLowFeasibility": "कम संभावना",
+
+  "tapForDetails": "विवरण के लिए टैप करें →"
+  ,
+
+  "careerDetailsTitle": "करियर विवरण",
+
+  "noCareerData": "कोई करियर डेटा नहीं मिला।\nवापस जाकर करियर कार्ड पर टैप करें।",
+
+  "scoreModerateFeasibility": "मध्यम संभावना",
+
+  "realityScoreValue": "Reality Score: {score}/100",
+
+  "scoreBreakdownTitle": "स्कोर विश्लेषण",
+
+  "subscoreAcademicFit": "शैक्षणिक अनुकूलता",
+  "subscoreFinancialFit": "आर्थिक अनुकूलता",
+  "subscoreEffortPayoff": "मेहनत बनाम लाभ",
+  "subscoreInterestMatch": "रुचि मेल",
+
+  "keyFactsTitle": "मुख्य जानकारी",
+
+  "factDuration": "अवधि",
+  "factEntranceExam": "प्रवेश परीक्षा",
+  "factRealisticCutoff": "वास्तविक कटऑफ",
+  "factCourseCost": "कोर्स की लागत",
+  "factExpectedSalary": "अनुमानित वेतन",
+  "factEmploymentRate": "रोज़गार दर",
+
+  "btnViewRoadmap": "रोडमैप देखें",
+  "btnViewSchemes": "पात्र योजनाएँ देखें",
+  "btnAlternatePaths": "क्या मैं इसका खर्च नहीं उठा सकता?"
+  ,
+
+  "processingMessage": "Gemini आपकी प्रोफ़ाइल का विश्लेषण कर रहा है...",
+
+  "skipLoadingDev": "लोडिंग छोड़ें (डेव मोड)"
+  ,
+
+  "errorNoCareerData": "कोई करियर डेटा नहीं मिला।",
+
+  "roadmapTitle": "आपका रोडमैप",
+  "roadmapLoading": "आपका व्यक्तिगत रोडमैप तैयार किया जा रहा है...",
+  "errorRoadmapGeneration": "रोडमैप तैयार नहीं हो सका। कृपया पुनः प्रयास करें।",
+  "yourJourney": "आपकी यात्रा",
+  "milestonesProgress": "{completed} में से {total} माइलस्टोन पूरे",
+
+  "summaryEntranceExams": "प्रवेश परीक्षाएँ",
+  "summaryKeySkills": "मुख्य कौशल",
+  "summaryCostSummary": "लागत सारांश",
+
+  "schemesTitle": "पात्र योजनाएँ",
+  "schemesLoading": "आपकी पात्र छात्रवृत्तियाँ खोजी जा रही हैं...",
+  "schemesEmpty": "कोई मिलती-जुलती योजना नहीं मिली।\nकोई दूसरा करियर देखें या बाद में जाँच करें।",
+  "schemesQualifyBanner": "{count, plural, =1{आपकी प्रोफ़ाइल के आधार पर आप 1 योजना के लिए पात्र हैं} other{आपकी प्रोफ़ाइल के आधार पर आप {count} योजनाओं के लिए पात्र हैं}}",
+  "schemeAmount": "राशि",
+  "schemeDeadline": "अंतिम तिथि",
+  "schemeApplyAt": "आवेदन करें",
+
+  "alternateTitle": "किफायती विकल्प",
+  "alternateExploring": "इसके विकल्प खोज रहे हैं",
+  "alternateBudgetQuestion": "आपका अधिकतम वार्षिक शिक्षा बजट क्या है?",
+  "alternateBudgetHint": "जैसे ₹1 लाख के लिए 1, ₹50K के लिए 0.5",
+  "alternateBudgetSuffix": "लाख / वर्ष",
+  "alternateBudgetError": "अधिकतम वार्षिक बजट संख्या में दर्ज करें (जैसे ₹1 लाख के लिए 1)",
+  "alternateFindBtn": "विकल्प खोजें",
+  "alternateSearching": "विकल्प खोजे जा रहे हैं...",
+  "alternateEmpty": "इस बजट में कोई विकल्प नहीं मिला।\nथोड़ा बजट बढ़ाकर पुनः प्रयास करें।",
+  "alternateResultsHeader": "{count, plural, =1{आपके बजट में 1 विकल्प} other{आपके बजट में {count} विकल्प}}",
+  "alternateSalaryLabel": "वेतन: {value}"
+}

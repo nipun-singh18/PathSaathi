@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 
 class CareerRecommendationsScreen extends StatelessWidget {
   const CareerRecommendationsScreen({super.key});
@@ -9,14 +10,16 @@ class CareerRecommendationsScreen extends StatelessWidget {
     return Colors.red;
   }
 
-  String _scoreLabel(int score) {
-    if (score >= 71) return 'Highly Suitable';
-    if (score >= 41) return 'Moderate';
-    return 'Low Feasibility';
+  /// Returns the localized label for a score band.
+  String _scoreLabel(int score, AppLocalizations t) {
+    if (score >= 71) return t.scoreHighlySuitable;
+    if (score >= 41) return t.scoreModerate;
+    return t.scoreLowFeasibility;
   }
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final results =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     final recommendations = results?['recommendations'] as List<dynamic>? ?? [];
@@ -26,17 +29,17 @@ class CareerRecommendationsScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
-        title: const Text(
-          'Your Career Matches',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          t.recommendationsTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: recommendations.isEmpty
-          ? const Center(
+          ? Center(
               child: Text(
-                'No recommendations found.\nPlease go back and try again.',
+                t.noRecommendations,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
               ),
             )
           : ListView.builder(
@@ -76,6 +79,7 @@ class CareerRecommendationsScreen extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
+                                // Career name — always English (per design)
                                 career['career'] ?? '',
                                 style: const TextStyle(
                                   fontSize: 17,
@@ -106,7 +110,7 @@ class CareerRecommendationsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          _scoreLabel(score),
+                          _scoreLabel(score, t),
                           style: TextStyle(
                             fontSize: 12,
                             color: _scoreColor(score),
@@ -115,6 +119,7 @@ class CareerRecommendationsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
+                          // Already in user's language — Gemini handled it
                           career['why'] ?? '',
                           style: TextStyle(
                             fontSize: 13,
@@ -141,7 +146,7 @@ class CareerRecommendationsScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              'Tap for details →',
+                              t.tapForDetails,
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.blue[600],

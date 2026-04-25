@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/knowledge_base.dart';
+import '../l10n/app_localizations.dart';
 
 class CareerDetailScreen extends StatelessWidget {
   const CareerDetailScreen({super.key});
@@ -10,24 +11,25 @@ class CareerDetailScreen extends StatelessWidget {
     return Colors.red;
   }
 
-  String _scoreLabel(int score) {
-    if (score >= 71) return 'Highly Suitable';
-    if (score >= 41) return 'Moderate Feasibility';
-    return 'Low Feasibility';
+  String _scoreLabel(int score, AppLocalizations t) {
+    if (score >= 71) return t.scoreHighlySuitable;
+    if (score >= 41) return t.scoreModerateFeasibility;
+    return t.scoreLowFeasibility;
   }
 
   @override
   Widget build(BuildContext context) {
-    // The career object was passed from the recommendations screen.
+    final t = AppLocalizations.of(context)!;
+
     final career =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
     if (career == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Career Details')),
-        body: const Center(
+        appBar: AppBar(title: Text(t.careerDetailsTitle)),
+        body: Center(
           child: Text(
-            'No career data passed.\nGo back and tap a career card.',
+            t.noCareerData,
             textAlign: TextAlign.center,
           ),
         ),
@@ -56,9 +58,9 @@ class CareerDetailScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
-        title: const Text(
-          'Career Details',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          t.careerDetailsTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(
@@ -72,7 +74,7 @@ class CareerDetailScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    careerName,
+                    careerName, // Career name — always English by design
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -92,7 +94,7 @@ class CareerDetailScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          'Reality Score: $score/100',
+                          t.realityScoreValue(score),
                           style: TextStyle(
                             color: _scoreColor(score),
                             fontWeight: FontWeight.w700,
@@ -102,7 +104,7 @@ class CareerDetailScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       Text(
-                        _scoreLabel(score),
+                        _scoreLabel(score, t),
                         style: TextStyle(
                           color: _scoreColor(score),
                           fontWeight: FontWeight.w600,
@@ -121,7 +123,7 @@ class CareerDetailScreen extends StatelessWidget {
                         border: Border.all(color: Colors.grey.shade200),
                       ),
                       child: Text(
-                        why,
+                        why, // Already in user's language thanks to Gemini
                         style: TextStyle(
                           color: Colors.grey[800],
                           fontSize: 13,
@@ -142,22 +144,22 @@ class CareerDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Score Breakdown',
-                    style: TextStyle(
+                  Text(
+                    t.scoreBreakdownTitle,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF1A1A2E),
                     ),
                   ),
                   const SizedBox(height: 12),
-                  _scoreBar('Academic Fit', academicFit),
+                  _scoreBar(t.subscoreAcademicFit, academicFit),
                   const SizedBox(height: 10),
-                  _scoreBar('Financial Fit', financialFit),
+                  _scoreBar(t.subscoreFinancialFit, financialFit),
                   const SizedBox(height: 10),
-                  _scoreBar('Effort vs Payoff', effortPayoff),
+                  _scoreBar(t.subscoreEffortPayoff, effortPayoff),
                   const SizedBox(height: 10),
-                  _scoreBar('Interest Match', interestMatch),
+                  _scoreBar(t.subscoreInterestMatch, interestMatch),
                 ],
               ),
             ),
@@ -169,24 +171,24 @@ class CareerDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Key Facts',
-                    style: TextStyle(
+                  Text(
+                    t.keyFactsTitle,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF1A1A2E),
                     ),
                   ),
                   const SizedBox(height: 10),
-                  _factRow(Icons.access_time, 'Duration', duration),
-                  _factRow(Icons.school, 'Entrance Exam', entranceExam),
-                  _factRow(Icons.bar_chart, 'Realistic Cutoff', cutoff),
-                  _factRow(Icons.currency_rupee, 'Course Cost', costEstimate),
-                  _factRow(Icons.work, 'Expected Salary', monthlySalary),
+                  _factRow(Icons.access_time, t.factDuration, duration),
+                  _factRow(Icons.school, t.factEntranceExam, entranceExam),
+                  _factRow(Icons.bar_chart, t.factRealisticCutoff, cutoff),
+                  _factRow(Icons.currency_rupee, t.factCourseCost, costEstimate),
+                  _factRow(Icons.work, t.factExpectedSalary, monthlySalary),
                   if (employmentRate != null)
                     _factRow(
                       Icons.trending_up,
-                      'Employment Rate',
+                      t.factEmploymentRate,
                       '$employmentRate%',
                     ),
                 ],
@@ -206,7 +208,7 @@ class CareerDetailScreen extends StatelessWidget {
                 ),
                 style: _primaryBtn(),
                 icon: const Icon(Icons.timeline),
-                label: const Text('View Roadmap'),
+                label: Text(t.btnViewRoadmap),
               ),
             ),
             const SizedBox(height: 10),
@@ -220,7 +222,7 @@ class CareerDetailScreen extends StatelessWidget {
                 ),
                 style: _secondaryBtn(),
                 icon: const Icon(Icons.account_balance),
-                label: const Text('View Eligible Schemes'),
+                label: Text(t.btnViewSchemes),
               ),
             ),
             const SizedBox(height: 10),
@@ -241,7 +243,7 @@ class CareerDetailScreen extends StatelessWidget {
                   ),
                 ),
                 icon: const Icon(Icons.swap_horiz),
-                label: const Text("What If I Can't Afford This?"),
+                label: Text(t.btnAlternatePaths),
               ),
             ),
             const SizedBox(height: 20),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/gemini_service.dart';
+import '../l10n/app_localizations.dart';
 
 class GovernmentSchemesScreen extends StatefulWidget {
   const GovernmentSchemesScreen({super.key});
@@ -25,13 +26,15 @@ class _GovernmentSchemesScreenState extends State<GovernmentSchemesScreen> {
     if (_initialised) return;
     _initialised = true;
 
+    final t = AppLocalizations.of(context)!;
+
     final career =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
     if (career == null) {
       setState(() {
         _loading = false;
-        _error = 'No career data received.';
+        _error = t.errorNoCareerData;
       });
       return;
     }
@@ -74,6 +77,7 @@ class _GovernmentSchemesScreenState extends State<GovernmentSchemesScreen> {
   }
 
   Future<void> _fetchSchemes() async {
+    final t = AppLocalizations.of(context)!;
     try {
       final profile = await _loadStudentProfile();
       final gemini = GeminiService();
@@ -95,33 +99,36 @@ class _GovernmentSchemesScreenState extends State<GovernmentSchemesScreen> {
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = 'Something went wrong: $e';
+        _error = t.errorPrefix(e.toString());
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
-        title: const Text(
-          'Eligible Schemes',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          t.schemesTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: _loading
-          ? const Center(
+          ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
                   Text(
-                    'Finding scholarships you qualify for...',
-                    style: TextStyle(color: Colors.grey),
+                    t.schemesLoading,
+                    style: const TextStyle(color: Colors.grey),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
@@ -134,21 +141,21 @@ class _GovernmentSchemesScreenState extends State<GovernmentSchemesScreen> {
               ),
             )
           : _schemes.isEmpty
-          ? const Center(
+          ? Center(
               child: Padding(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 child: Text(
-                  'No matching schemes found.\nTry a different career or check back later.',
+                  t.schemesEmpty,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
                 ),
               ),
             )
-          : _buildSchemeList(),
+          : _buildSchemeList(t),
     );
   }
 
-  Widget _buildSchemeList() {
+  Widget _buildSchemeList(AppLocalizations t) {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: _schemes.length + 1,
@@ -169,7 +176,7 @@ class _GovernmentSchemesScreenState extends State<GovernmentSchemesScreen> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      'You qualify for ${_schemes.length} scheme${_schemes.length == 1 ? '' : 's'} based on your profile',
+                      t.schemesQualifyBanner(_schemes.length),
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -184,13 +191,15 @@ class _GovernmentSchemesScreenState extends State<GovernmentSchemesScreen> {
         }
 
         final scheme = _schemes[index - 1] as Map<String, dynamic>;
-        return _schemeCard(scheme);
+        return _schemeCard(scheme, t);
       },
     );
   }
 
-  Widget _schemeCard(Map<String, dynamic> scheme) {
+  Widget _schemeCard(Map<String, dynamic> scheme, AppLocalizations t) {
+    // Scheme name stays English (official name from KB)
     final name = scheme['scheme_name']?.toString() ?? 'Scheme';
+    // Reason already in user's language (Gemini handles it)
     final reason = scheme['eligibility_reason']?.toString() ?? '';
     final amount = scheme['benefit_amount']?.toString() ?? '';
     final deadline = scheme['deadline']?.toString() ?? '';
@@ -256,10 +265,10 @@ class _GovernmentSchemesScreenState extends State<GovernmentSchemesScreen> {
           ],
           const SizedBox(height: 12),
           if (amount.isNotEmpty)
-            _infoRow(Icons.currency_rupee, 'Amount', amount),
+            _infoRow(Icons.currency_rupee, t.schemeAmount, amount),
           if (deadline.isNotEmpty)
-            _infoRow(Icons.calendar_today, 'Deadline', deadline),
-          if (link.isNotEmpty) _infoRow(Icons.link, 'Apply at', link),
+            _infoRow(Icons.calendar_today, t.schemeDeadline, deadline),
+          if (link.isNotEmpty) _infoRow(Icons.link, t.schemeApplyAt, link),
         ],
       ),
     );

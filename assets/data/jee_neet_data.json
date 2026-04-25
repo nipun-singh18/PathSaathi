@@ -1,0 +1,481 @@
+{
+  "source": "JEE_NEET_College_Dataset.xlsx",
+  "description": "JEE percentile / NEET score → college mapping with tiers, fees, salaries, and reality-check notes for Indian students.",
+  "jee_tiers": [
+    {
+      "tier": "🏆 TIER 1 — IIT (JEE Advanced Required)",
+      "entries": [
+        {
+          "score_range": "99.5 – 100 percentile | (Rank 1–500)",
+          "exam_level": "JEE Advanced",
+          "colleges": "IIT Bombay, IIT Delhi, IIT Madras, IIT Kanpur",
+          "branches": "CSE, EE, Mechanical (top branches)",
+          "cutoff": "Gen: Rank <200 | OBC: Rank <700",
+          "avg_package_entry_lpa": "20–30 LPA",
+          "avg_package_top25_lpa": "50–2 Cr+",
+          "employment_rate_pct": "99%",
+          "notes": "Dream territory. Top global recruiters. FAANG, Quant, Consulting all recruit here."
+        },
+        {
+          "score_range": "99 – 99.5 percentile | (Rank 500–2500)",
+          "exam_level": "JEE Advanced",
+          "colleges": "IIT Roorkee, IIT Kharagpur, IIT Guwahati, IIT Hyderabad",
+          "branches": "CSE, EE, Chemical, Civil",
+          "cutoff": "Gen: Rank <1500 | OBC: Rank <4000",
+          "avg_package_entry_lpa": "14–22 LPA",
+          "avg_package_top25_lpa": "30–80 LPA",
+          "employment_rate_pct": "98%",
+          "notes": "Still excellent. Strong placements. Branch matters more here — CSE > others."
+        },
+        {
+          "score_range": "98 – 99 percentile | (Rank 2500–8000)",
+          "exam_level": "JEE Advanced",
+          "colleges": "IIT BHU, IIT Dhanbad (ISM), IIT Patna, IIT Ropar, IIT Mandi",
+          "branches": "CSE, EE, Mechanical, Mining",
+          "cutoff": "Gen: Rank <5000 | OBC: Rank <12000",
+          "avg_package_entry_lpa": "10–16 LPA",
+          "avg_package_top25_lpa": "20–50 LPA",
+          "employment_rate_pct": "95%",
+          "notes": "Newer IITs but IIT tag still opens doors. Avoid Mining/Metallurgy if placement is priority."
+        }
+      ]
+    },
+    {
+      "tier": "🥈 TIER 2 — NIT (JEE Main Required)",
+      "entries": [
+        {
+          "score_range": "97 – 99 percentile | (CRL 5,000–25,000)",
+          "exam_level": "JEE Main",
+          "colleges": "NIT Trichy, NIT Warangal, NIT Surathkal, NIT Calicut",
+          "branches": "CSE, ECE, EE, Mechanical",
+          "cutoff": "Gen: 97%ile+ | OBC: 95%ile+",
+          "avg_package_entry_lpa": "8–14 LPA",
+          "avg_package_top25_lpa": "20–40 LPA",
+          "employment_rate_pct": "93%",
+          "notes": "Top NITs rival newer IITs. Home state quota helps. CSE cutoff highest."
+        },
+        {
+          "score_range": "93 – 97 percentile | (CRL 25,000–80,000)",
+          "exam_level": "JEE Main",
+          "colleges": "NIT Raipur, NIT Silchar, NIT Jamshedpur, NIT Hamirpur, NIT Kurukshetra",
+          "branches": "CSE, ECE, Civil, Mechanical",
+          "cutoff": "Gen: 93–96%ile | OBC: 89–93%ile",
+          "avg_package_entry_lpa": "6–10 LPA",
+          "avg_package_top25_lpa": "12–25 LPA",
+          "employment_rate_pct": "88%",
+          "notes": "Mid-tier NITs. Branch selection critical. CSE/ECE only for placement focus."
+        },
+        {
+          "score_range": "88 – 93 percentile | (CRL 80,000–2,00,000)",
+          "exam_level": "JEE Main",
+          "colleges": "NIT Agartala, NIT Manipur, NIT Mizoram + newer NITs",
+          "branches": "Civil, Mechanical, Chemical, EE",
+          "cutoff": "Gen: 88–92%ile | OBC: 84–88%ile",
+          "avg_package_entry_lpa": "4–7 LPA",
+          "avg_package_top25_lpa": "10–18 LPA",
+          "employment_rate_pct": "78%",
+          "notes": "Newer NITs still carry NIT brand. Non-CSE branches have lower placement rates."
+        }
+      ]
+    },
+    {
+      "tier": "🏛️ TIER 3 — IIIT & Government Deemed",
+      "entries": [
+        {
+          "score_range": "95 – 98 percentile | (CRL 15,000–50,000)",
+          "exam_level": "JEE Main",
+          "colleges": "IIIT Hyderabad, IIIT Bangalore, IIIT Delhi, IIIT Allahabad",
+          "branches": "CSE, ECE, IT, Data Science",
+          "cutoff": "Varies by IIIT; IIIT-H very competitive",
+          "avg_package_entry_lpa": "10–20 LPA",
+          "avg_package_top25_lpa": "25–60 LPA",
+          "employment_rate_pct": "95%",
+          "notes": "IIITs are CS-focused. IIIT-H placements rival top NITs. Pure tech — ideal for SWE."
+        },
+        {
+          "score_range": "85 – 93 percentile | (CRL 1L–3L)",
+          "exam_level": "JEE Main",
+          "colleges": "BITS Pilani/Goa/Hyderabad (via BITSAT) | DTU, NSUT, IGDTUW (Delhi — via JEE Main)",
+          "branches": "CSE, EE, Mech, Chemical",
+          "cutoff": "BITSAT: 300+/390 | DTU CSE: ~97%ile Delhi quota",
+          "avg_package_entry_lpa": "8–15 LPA",
+          "avg_package_top25_lpa": "20–50 LPA",
+          "employment_rate_pct": "91%",
+          "notes": "BITS is the best private option. Delhi tech unis have great placement via industry proximity."
+        }
+      ]
+    },
+    {
+      "tier": "🏢 TIER 4 — State Govt & Private Colleges",
+      "entries": [
+        {
+          "score_range": "75 – 88 percentile | (CRL 3L–6L)",
+          "exam_level": "JEE Main / State CET",
+          "colleges": "State Govt Engineering Colleges (Top) | e.g. PEC Chandigarh, THAPAR, VIT, SRM (top campus)",
+          "branches": "CSE, ECE, IT",
+          "cutoff": "State-specific; Punjab: ~80%ile for PEC",
+          "avg_package_entry_lpa": "5–9 LPA",
+          "avg_package_top25_lpa": "12–20 LPA",
+          "employment_rate_pct": "80%",
+          "notes": "State quota + home state college = smart strategy. Skills & internships matter most here."
+        },
+        {
+          "score_range": "60 – 75 percentile | (CRL 6L–10L)",
+          "exam_level": "JEE Main / State CET",
+          "colleges": "Mid-tier state colleges, VIT (Chennai/AP), Manipal, Amity",
+          "branches": "CSE, IT, Mechanical, Civil",
+          "cutoff": "State CET: 60–70%",
+          "avg_package_entry_lpa": "3–6 LPA",
+          "avg_package_top25_lpa": "8–15 LPA",
+          "employment_rate_pct": "68%",
+          "notes": "Private colleges — verify NAAC grade and placement report before paying fees."
+        },
+        {
+          "score_range": "Below 60 percentile | OR no JEE",
+          "exam_level": "State CET / Direct | Admission",
+          "colleges": "Local private colleges, deemed universities",
+          "branches": "All branches — placement depends heavily on college quality",
+          "cutoff": "50–60% in 12th",
+          "avg_package_entry_lpa": "2–4 LPA",
+          "avg_package_top25_lpa": "5–10 LPA",
+          "employment_rate_pct": "50%",
+          "notes": "Skills > college here. Focus on projects, certifications, GitHub. Degree = entry ticket only."
+        }
+      ]
+    },
+    {
+      "tier": "📌 SPECIAL PATHS — No JEE / Alternative Routes",
+      "entries": [
+        {
+          "score_range": "BITSAT Route | (No JEE Required)",
+          "exam_level": "BITSAT Exam",
+          "colleges": "BITS Pilani, BITS Goa, BITS Hyderabad",
+          "branches": "CSE, EE, Mechanical, Chemical, Pharma",
+          "cutoff": "BITSAT: 300+ for CSE Pilani",
+          "avg_package_entry_lpa": "10–18 LPA",
+          "avg_package_top25_lpa": "25–60 LPA",
+          "employment_rate_pct": "93%",
+          "notes": "Best non-JEE tech option. Separate exam — prepare independently from JEE."
+        },
+        {
+          "score_range": "B.Sc → IIT JAM Route | (After 12th Non-Med)",
+          "exam_level": "IIT JAM (PG)",
+          "colleges": "IITs (for M.Sc) — IIT Bombay, Delhi, Madras etc.",
+          "branches": "Physics, Chemistry, Maths, Statistics, Biotechnology",
+          "cutoff": "IIT JAM cutoff: top 20–30% applicants",
+          "avg_package_entry_lpa": "6–12 LPA",
+          "avg_package_top25_lpa": "15–30 LPA",
+          "employment_rate_pct": "88%",
+          "notes": "Underrated path. BSc from good college → IIT JAM → IIT MSc → excellent placements."
+        },
+        {
+          "score_range": "Lateral Entry (Diploma) | (3-yr Diploma → 2nd yr Engg)",
+          "exam_level": "State Lateral Entry CET",
+          "colleges": "State Govt + Private Engineering Colleges",
+          "branches": "Mechanical, Civil, Electrical, Electronics",
+          "cutoff": "Diploma: 60%+",
+          "avg_package_entry_lpa": "3–6 LPA",
+          "avg_package_top25_lpa": "8–15 LPA",
+          "employment_rate_pct": "72%",
+          "notes": "Saves 1 year. Good for students who did polytechnic diploma after 10th."
+        }
+      ]
+    }
+  ],
+  "neet_tiers": [
+    {
+      "tier": "🏆 TIER 1 — Top Govt MBBS (650–720)",
+      "entries": [
+        {
+          "score_range": "680 – 720 | (Out of 720)",
+          "expected_air": "AIR 1–500",
+          "colleges": "AIIMS Delhi, JIPMER Puducherry, AIIMS Bhopal/Jodhpur/Patna",
+          "course": "MBBS (5.5 yrs)",
+          "cutoff": "AIIMS separate exam; NEET 680+ for top AIIMS",
+          "govt_fee_total": "₹1K–5K/yr (heavily subsidised)",
+          "private_fee_total": "N/A — only govt",
+          "avg_monthly_salary": "₹60K–1.5L/mo (PG) | ₹40K–80K (Fresher)",
+          "notes": "Dream colleges. 5 yr MBBS + 3 yr MD = 8 yrs. AIIMS brand = lifetime asset."
+        },
+        {
+          "score_range": "620 – 680 | (Out of 720)",
+          "expected_air": "AIR 500–5,000",
+          "colleges": "Top State Govt Medical Colleges | (e.g. GMCH Chandigarh, Maulana Azad Delhi, Grant Mumbai)",
+          "course": "MBBS (5.5 yrs)",
+          "cutoff": "Gen: 620+ | OBC: 580+ | SC/ST: 480+",
+          "govt_fee_total": "₹5K–1L/yr",
+          "private_fee_total": "N/A (govt)",
+          "avg_monthly_salary": "₹50K–1.2L/mo (after PG)",
+          "notes": "Excellent outcome. Home state quota critical — apply state counselling first."
+        },
+        {
+          "score_range": "550 – 620 | (Out of 720)",
+          "expected_air": "AIR 5,000–25,000",
+          "colleges": "Mid-tier Govt Medical Colleges (state-level) | North India — PGIMS Rohtak, GSVM Kanpur, BRD Gorakhpur",
+          "course": "MBBS (5.5 yrs)",
+          "cutoff": "Gen: 550+ | OBC: 500+ | SC/ST: 400+",
+          "govt_fee_total": "₹10K–2L/yr",
+          "private_fee_total": "N/A (govt)",
+          "avg_monthly_salary": "₹40K–1L/mo",
+          "notes": "State quota seats. These colleges produce solid doctors. PG entrance after is next hurdle."
+        }
+      ]
+    },
+    {
+      "tier": "🥈 TIER 2 — Private MBBS & BDS (450–600)",
+      "entries": [
+        {
+          "score_range": "500 – 600 | (Out of 720)",
+          "expected_air": "AIR 25,000–80,000",
+          "colleges": "Private Medical Colleges (MCI approved) | Manipal, SRM, Kasturba, JSS, Amrita",
+          "course": "MBBS (5.5 yrs)",
+          "cutoff": "450–550 NEET for most private colleges",
+          "private_fee_total": "₹10L–25L/yr | (Total: ₹50L–1.25 Cr)",
+          "avg_monthly_salary": "₹40K–1L/mo (after internship)",
+          "notes": "Expensive but valid path. Verify MCI recognition. Avoid management quota traps — huge fees."
+        },
+        {
+          "score_range": "450 – 550 | (Out of 720)",
+          "expected_air": "AIR 80,000–1,50,000",
+          "colleges": "BDS (Dental) Govt Colleges — top state | e.g. KGMU Lucknow, Maulana Azad Delhi",
+          "course": "BDS (5 yrs)",
+          "cutoff": "Gen: 450+ | OBC: 420+",
+          "govt_fee_total": "₹20K–1L/yr",
+          "private_fee_total": "₹3L–8L/yr | (Total: ₹15L–40L)",
+          "avg_monthly_salary": "₹30K–80K/mo",
+          "notes": "BDS is underrated. Govt BDS + private practice = ₹1L+/mo after 3–4 yrs setup."
+        },
+        {
+          "score_range": "400 – 500 | (Out of 720)",
+          "expected_air": "AIR 1.5L–3L",
+          "colleges": "Private BDS Colleges (state-level) | BDS at average private dental colleges",
+          "course": "BDS (5 yrs)",
+          "cutoff": "400–450 NEET for most private BDS",
+          "private_fee_total": "₹2L–6L/yr | (Total: ₹10L–30L)",
+          "avg_monthly_salary": "₹25K–60K/mo",
+          "notes": "Private BDS is viable if family can fund ₹10–30L total. Practice + clinic = good long-term income."
+        }
+      ]
+    },
+    {
+      "tier": "🌿 TIER 3 — AYUSH (BAMS/BHMS/BUMS) — 300–500",
+      "entries": [
+        {
+          "score_range": "380 – 500 | (Out of 720)",
+          "expected_air": "AIR 3L–5L",
+          "colleges": "Govt AYUSH Colleges | (State Ayurvedic/Homeopathic Medical Colleges)",
+          "course": "BAMS (5.5 yrs) | BHMS (5.5 yrs)",
+          "cutoff": "NEET 350–450 for most govt AYUSH",
+          "govt_fee_total": "₹10K–50K/yr",
+          "private_fee_total": "₹50K–2L/yr | (Total: ₹2.5L–10L)",
+          "avg_monthly_salary": "₹25K–60K/mo",
+          "notes": "Govt AYUSH is excellent value. BAMS grads can do MD (Ayurveda) and practice legally."
+        },
+        {
+          "score_range": "300 – 400 | (Out of 720)",
+          "expected_air": "AIR 5L–8L",
+          "colleges": "Private AYUSH Colleges",
+          "course": "BAMS / BHMS / BUMS / BNYS (5.5 yrs)",
+          "cutoff": "300–380 NEET for private AYUSH",
+          "private_fee_total": "₹1L–3L/yr | (Total: ₹5L–15L)",
+          "avg_monthly_salary": "₹20K–50K/mo",
+          "notes": "Many private AYUSH colleges have poor infrastructure. Check NMC recognition before admission."
+        }
+      ]
+    },
+    {
+      "tier": "🩹 TIER 4 — Nursing & Allied Health (150–400)",
+      "entries": [
+        {
+          "score_range": "200 – 350 | (Out of 720)",
+          "expected_air": "AIR 8L–12L",
+          "colleges": "Govt Nursing Colleges (State) | AIIMS Nursing, PGIMER Nursing, State Nursing Colleges",
+          "course": "B.Sc Nursing (4 yrs)",
+          "cutoff": "NEET: 200–350 / 60%+ in 12th | State CET for some states",
+          "govt_fee_total": "₹10K–50K/yr",
+          "private_fee_total": "₹80K–2.5L/yr | (Total: ₹3L–10L)",
+          "avg_monthly_salary": "₹25K–60K/mo | (Govt hospital: ₹35K+)",
+          "notes": "B.Sc Nursing from AIIMS/PGIMER = excellent placement. Govt hospital jobs stable with perks."
+        },
+        {
+          "score_range": "150 – 250 | (Out of 720)",
+          "expected_air": "AIR 12L+",
+          "colleges": "Private Nursing + Allied Health Colleges | Physiotherapy, Radiology, MLT, OT Tech",
+          "course": "B.Sc Nursing / B.Sc Physiotherapy / | BSc MLT / BOT (3–4 yrs)",
+          "cutoff": "NEET: 150+ or 50% in 12th (state-wise)",
+          "govt_fee_total": "₹20K–1L/yr",
+          "private_fee_total": "₹1L–3L/yr | (Total: ₹4L–12L)",
+          "avg_monthly_salary": "₹18K–45K/mo | (Physio: ₹25–80K)",
+          "notes": "Allied health growing fast post-COVID. Physiotherapy + private practice = ₹1L+/mo potential."
+        },
+        {
+          "score_range": "Below 150 | OR NEET not cleared",
+          "expected_air": "Didn't qualify NEET",
+          "colleges": "B.Sc in Life Sciences, Biotechnology, Microbiology | (No NEET required — direct admission)",
+          "course": "B.Sc Biotech / Micro / Zoology / Botany (3 yrs) | then M.Sc → PhD or Industry",
+          "cutoff": "50–60% in 12th Biology",
+          "govt_fee_total": "₹10K–50K/yr (Govt) | ₹50K–2L/yr (Private)",
+          "private_fee_total": "₹1L–4L/yr",
+          "avg_monthly_salary": "₹20K–60K/mo | (Research: ₹35K–1.5L)",
+          "notes": "NEET not clearing ≠ medical career over. B.Sc + M.Sc + NET = Lecturer/Researcher path. Pharma R&D hires these graduates."
+        }
+      ]
+    },
+    {
+      "tier": "🎯 CATEGORY ADVANTAGE — How SC/OBC/ST Changes Everything",
+      "entries": [
+        {
+          "score_range": "SC Category | (Same marks — different college)",
+          "expected_air": "SC quota",
+          "colleges": "SC students get ~150 marks advantage effectively | Example: SC 400 = Gen 550 equivalent college",
+          "course": "MBBS / BDS / AYUSH",
+          "cutoff": "SC cutoff 2024: | MBBS Govt: ~370–420 | BDS Govt: ~300–360",
+          "govt_fee_total": "Same as gen (₹5K–2L)",
+          "private_fee_total": "Same fees",
+          "avg_monthly_salary": "Same salary outcomes",
+          "notes": "SC quota = 15% of all govt seats. Use it strategically. Home state quota + SC = maximum advantage."
+        },
+        {
+          "score_range": "OBC Category | (27% reservation)",
+          "expected_air": "OBC quota",
+          "colleges": "OBC students need ~50 less marks than Gen | Example: OBC 480 ≈ Gen 530",
+          "course": "MBBS / BDS / AYUSH",
+          "cutoff": "OBC cutoff 2024: | MBBS Govt: ~450–490 | BDS Govt: ~380–420",
+          "govt_fee_total": "Same as gen",
+          "private_fee_total": "Same fees",
+          "avg_monthly_salary": "Same salary outcomes",
+          "notes": "OBC Non-Creamy Layer (NCL) — income below ₹8L/yr. Must have valid OBC-NCL certificate."
+        },
+        {
+          "score_range": "EWS Category | (10% reservation — General poor)",
+          "expected_air": "EWS quota",
+          "colleges": "EWS 10% of all seats since 2019 | Same colleges as Gen — different cutoff",
+          "course": "MBBS / BDS / AYUSH",
+          "cutoff": "EWS cutoff ≈ Gen cutoff –20 to 30 marks | Income limit: ₹8L/yr family",
+          "govt_fee_total": "Same as gen",
+          "private_fee_total": "Same fees",
+          "avg_monthly_salary": "Same salary outcomes",
+          "notes": "New category — many students don't claim this. Income certificate from tehsildar needed annually."
+        }
+      ]
+    }
+  ],
+  "quick_lookup": {
+    "jee": [
+      {
+        "percentile": "99.5+",
+        "best_option": "IIT Bombay / Delhi — CSE",
+        "branch_focus": "CSE / EE",
+        "avg_package": "20–30 LPA",
+        "backup": "IIT Madras / Kanpur",
+        "action": "Prepare JEE Adv seriously"
+      },
+      {
+        "percentile": "99 – 99.5",
+        "best_option": "IIT Roorkee / KGP — CSE",
+        "branch_focus": "CSE / EE / Chem",
+        "avg_package": "14–20 LPA",
+        "backup": "IIT Hyderabad / BHU",
+        "action": "JEE Adv focus + NIT backup"
+      },
+      {
+        "percentile": "97 – 99",
+        "best_option": "NIT Trichy / Warangal — CSE",
+        "branch_focus": "CSE / ECE",
+        "avg_package": "10–14 LPA",
+        "backup": "IIIT Hyderabad",
+        "action": "Both NIT + IIIT apply"
+      },
+      {
+        "percentile": "93 – 97",
+        "best_option": "NIT (mid-tier) — CSE/ECE",
+        "branch_focus": "CSE / ECE only",
+        "avg_package": "6–10 LPA",
+        "backup": "BITS Pilani via BITSAT",
+        "action": "State quota home NIT priority"
+      },
+      {
+        "percentile": "88 – 93",
+        "best_option": "IIIT (newer) / Top State Govt",
+        "branch_focus": "CSE / IT",
+        "avg_package": "5–8 LPA",
+        "backup": "THAPAR / PEC",
+        "action": "State CET also apply"
+      },
+      {
+        "percentile": "75 – 88",
+        "best_option": "State Govt College / VIT",
+        "branch_focus": "CSE / IT / ECE",
+        "avg_package": "4–7 LPA",
+        "backup": "Manipal / Amity",
+        "action": "Focus on skills + internship"
+      },
+      {
+        "percentile": "Below 75",
+        "best_option": "Private College / B.Sc route",
+        "branch_focus": "Any branch + upskill",
+        "avg_package": "2–5 LPA",
+        "backup": "IIT JAM prep (B.Sc → IIT MSc)",
+        "action": "Skill certifications = key"
+      }
+    ],
+    "neet": [
+      {
+        "neet_score": "680–720",
+        "best_option": "AIIMS Delhi / JIPMER",
+        "course": "MBBS",
+        "govt_fee_total": "₹5K–30K (5 yrs)",
+        "private_alt": "Not needed",
+        "action": "Direct top college — apply AIIMS separately"
+      },
+      {
+        "neet_score": "620–680",
+        "best_option": "Top State Govt MBBS",
+        "course": "MBBS",
+        "govt_fee_total": "₹25K–5L (5 yrs)",
+        "private_alt": "Private MBBS (₹50L+)",
+        "action": "State counselling — home quota priority"
+      },
+      {
+        "neet_score": "550–620",
+        "best_option": "State Govt MBBS (mid-tier)",
+        "course": "MBBS",
+        "govt_fee_total": "₹50K–10L (5 yrs)",
+        "private_alt": "Private MBBS",
+        "action": "Apply all state counsellings"
+      },
+      {
+        "neet_score": "450–550",
+        "best_option": "Govt BDS / Private MBBS",
+        "course": "MBBS / BDS",
+        "govt_fee_total": "BDS: ₹1L–5L",
+        "private_alt": "Private BDS (₹15–40L)",
+        "action": "BDS govt >> Private MBBS (cost-benefit)"
+      },
+      {
+        "neet_score": "380–450",
+        "best_option": "BAMS / BHMS Govt",
+        "course": "BAMS / BHMS",
+        "govt_fee_total": "₹50K–3L (5 yrs)",
+        "private_alt": "Private BAMS/BHMS (₹5–15L)",
+        "action": "AYUSH govt = excellent ROI"
+      },
+      {
+        "neet_score": "200–380",
+        "best_option": "B.Sc Nursing Govt / Private BDS",
+        "course": "Nursing / BDS",
+        "govt_fee_total": "₹40K–2.5L",
+        "private_alt": "Private Nursing (₹3–10L)",
+        "action": "Nursing govt hospitals = job security"
+      },
+      {
+        "neet_score": "Below 200",
+        "best_option": "B.Sc Life Sciences / Biotechnology",
+        "course": "B.Sc (3 yrs)",
+        "govt_fee_total": "₹10K–50K/yr",
+        "private_alt": "Paramedical / Allied Health",
+        "action": "Reattempt NEET OR pivot to B.Sc"
+      }
+    ]
+  }
+}

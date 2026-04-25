@@ -5,8 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'firebase_options.dart';
 import 'services/knowledge_base.dart';
+import 'services/language_service.dart';
+import 'l10n/app_localizations.dart';
 
 // --- APP SCREENS ---
 import 'screens/welcome_screen.dart';
@@ -42,25 +45,36 @@ class PathSaathiApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'PathSaathi',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-      ),
-      home: const AuthGate(),
-      routes: {
-        '/welcome': (context) => const WelcomeScreen(),
-        '/stream_selection': (context) => const StreamSelectionScreen(),
-        '/profile_input': (context) => const ProfileInputScreen(),
-        '/processing': (context) => const ProcessingScreen(),
-        '/career_recommendations': (context) =>
-            const CareerRecommendationsScreen(),
-        '/career_detail': (context) => const CareerDetailScreen(),
-        '/visual_roadmap': (context) => const VisualRoadmapScreen(),
-        '/government_schemes': (context) => const GovernmentSchemesScreen(),
-        '/alternate_paths': (context) => const AlternatePathsScreen(),
+    // Listen to LanguageService so locale changes rebuild the whole app
+    return ListenableBuilder(
+      listenable: LanguageService.instance,
+      builder: (context, _) {
+        return MaterialApp(
+          title: 'PathSaathi',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+            useMaterial3: true,
+          ),
+          // ─── Localization ───
+          locale: LanguageService.instance.locale,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          // ─── Routing ───
+          home: const AuthGate(),
+          routes: {
+            '/welcome': (context) => const WelcomeScreen(),
+            '/stream_selection': (context) => const StreamSelectionScreen(),
+            '/profile_input': (context) => const ProfileInputScreen(),
+            '/processing': (context) => const ProcessingScreen(),
+            '/career_recommendations': (context) =>
+                const CareerRecommendationsScreen(),
+            '/career_detail': (context) => const CareerDetailScreen(),
+            '/visual_roadmap': (context) => const VisualRoadmapScreen(),
+            '/government_schemes': (context) => const GovernmentSchemesScreen(),
+            '/alternate_paths': (context) => const AlternatePathsScreen(),
+          },
+        );
       },
     );
   }
@@ -81,6 +95,9 @@ class AuthGate extends StatelessWidget {
           );
         }
         if (snapshot.hasData) {
+          // After login, load the user's saved language preference
+          // (fire-and-forget — doesn't block the welcome screen)
+          LanguageService.instance.loadFromFirestore();
           return const WelcomeScreen();
         }
         return const SignInPage();
