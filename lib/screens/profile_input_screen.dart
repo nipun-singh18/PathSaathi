@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui'; // For Glassmorphism
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/gemini_service.dart';
@@ -12,18 +13,19 @@ class ProfileInputScreen extends StatefulWidget {
 }
 
 class _ProfileInputScreenState extends State<ProfileInputScreen> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+  final int _totalPages = 4; // We divided the form into 4 pages
+
   final interestsController = TextEditingController();
   final strengthsController = TextEditingController();
-  final incomeController = TextEditingController(); // annual income in lakhs
-  final budgetController = TextEditingController(); // education budget / year
+  final incomeController = TextEditingController();
+  final budgetController = TextEditingController();
   final locationController = TextEditingController();
-  final marksController = TextEditingController(); // class 12 marks %
-  final neetScoreController = TextEditingController(); // /720 — Medical only
-  final jeePercentileController =
-      TextEditingController(); // 0-100 — Non-Medical only
+  final marksController = TextEditingController();
+  final neetScoreController = TextEditingController();
+  final jeePercentileController = TextEditingController();
 
-  /// Internal English codes — never translated. Used for KB lookups,
-  /// Gemini prompts, and Firestore writes.
   String selectedStream = 'Medical';
   String selectedCategory = 'General';
   bool isLoading = false;
@@ -40,42 +42,27 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
     }
   }
 
-  /// Resolves a stream English code to its localized display label.
   String _streamLabel(String code, AppLocalizations t) {
     switch (code) {
-      case 'Medical':
-        return t.streamMedical;
-      case 'Non-Medical':
-        return t.streamNonMedical;
-      case 'Commerce':
-        return t.streamCommerce;
-      case 'Arts':
-        return t.streamArts;
-      default:
-        return code;
+      case 'Medical': return t.streamMedical;
+      case 'Non-Medical': return t.streamNonMedical;
+      case 'Commerce': return t.streamCommerce;
+      case 'Arts': return t.streamArts;
+      default: return code;
     }
   }
 
-  /// Resolves a category English code to its localized display label.
   String _categoryLabel(String code, AppLocalizations t) {
     switch (code) {
-      case 'General':
-        return t.categoryGeneral;
-      case 'OBC':
-        return t.categoryOBC;
-      case 'SC':
-        return t.categorySC;
-      case 'ST':
-        return t.categoryST;
-      case 'EWS':
-        return t.categoryEWS;
-      default:
-        return code;
+      case 'General': return t.categoryGeneral;
+      case 'OBC': return t.categoryOBC;
+      case 'SC': return t.categorySC;
+      case 'ST': return t.categoryST;
+      case 'EWS': return t.categoryEWS;
+      default: return code;
     }
   }
 
-  /// Save the profile fields to Firestore so other screens (schemes,
-  /// alternate paths) can read them without asking again.
   Future<void> _saveProfileToFirestore({
     required int annualIncomeRupees,
     required String category,
@@ -107,7 +94,7 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
         incomeController.text.trim().isEmpty ||
         locationController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.errorRequiredFields)),
+        SnackBar(content: Text(t.errorRequiredFields), backgroundColor: Colors.redAccent),
       );
       return;
     }
@@ -116,17 +103,13 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
     final incomeLakhs = double.tryParse(incomeText);
     if (incomeLakhs == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.errorIncomeFormat)),
+        SnackBar(content: Text(t.errorIncomeFormat), backgroundColor: Colors.redAccent),
       );
       return;
     }
-    // Auto-detect: if user typed > 1000, assume they entered rupees directly,
-    // not lakhs (protects against users typing "300000" instead of "3")
-    final annualIncomeRupees = incomeLakhs > 1000
-        ? incomeLakhs.round()
-        : (incomeLakhs * 100000).round();
+    
+    final annualIncomeRupees = incomeLakhs > 1000 ? incomeLakhs.round() : (incomeLakhs * 100000).round();
 
-    // Parse optional entrance exam scores — only relevant for the matching stream
     int? neetScore;
     double? jeePercentile;
     if (selectedStream == 'Medical') {
@@ -135,7 +118,7 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
         neetScore = int.tryParse(s);
         if (neetScore == null || neetScore < 0 || neetScore > 720) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(t.errorNeetRange)),
+            SnackBar(content: Text(t.errorNeetRange), backgroundColor: Colors.redAccent),
           );
           return;
         }
@@ -144,11 +127,9 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
       final s = jeePercentileController.text.trim();
       if (s.isNotEmpty) {
         jeePercentile = double.tryParse(s);
-        if (jeePercentile == null ||
-            jeePercentile < 0 ||
-            jeePercentile > 100) {
+        if (jeePercentile == null || jeePercentile < 0 || jeePercentile > 100) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(t.errorJeeRange)),
+            SnackBar(content: Text(t.errorJeeRange), backgroundColor: Colors.redAccent),
           );
           return;
         }
@@ -158,15 +139,12 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
     setState(() => isLoading = true);
 
     try {
-      // Save profile first so downstream screens can read it
       await _saveProfileToFirestore(
         annualIncomeRupees: annualIncomeRupees,
         category: selectedCategory,
         stream: selectedStream,
         location: locationController.text.trim(),
-        class12Marks: marksController.text.trim().isEmpty
-            ? null
-            : marksController.text.trim(),
+        class12Marks: marksController.text.trim().isEmpty ? null : marksController.text.trim(),
         neetScore: neetScore,
         jeePercentile: jeePercentile,
       );
@@ -176,15 +154,11 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
         stream: selectedStream,
         interests: interestsController.text.trim(),
         strengths: strengthsController.text.trim(),
-        budget: budgetController.text.trim().isEmpty
-            ? 'not specified'
-            : budgetController.text.trim(),
+        budget: budgetController.text.trim().isEmpty ? 'not specified' : budgetController.text.trim(),
         location: locationController.text.trim(),
         category: selectedCategory,
         annualIncome: annualIncomeRupees,
-        class12Marks: marksController.text.trim().isEmpty
-            ? null
-            : '${marksController.text.trim()}%',
+        class12Marks: marksController.text.trim().isEmpty ? null : '${marksController.text.trim()}%',
         neetScore: neetScore,
         jeePercentile: jeePercentile,
       );
@@ -192,22 +166,44 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
       if (!mounted) return;
       setState(() => isLoading = false);
 
-      Navigator.pushNamed(
-        context,
-        '/career_recommendations',
-        arguments: results,
-      );
+      // Guard: if AI returned empty list, surface an error instead of showing blank screen
+      final recs = results['recommendations'] as List?;
+      if (recs == null || recs.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('AI returned no results. Check your API key or try again.'),
+            backgroundColor: Colors.redAccent,
+            duration: Duration(seconds: 5),
+          ),
+        );
+        return;
+      }
+
+      Navigator.pushNamed(context, '/career_recommendations', arguments: results);
     } catch (e) {
       if (!mounted) return;
       setState(() => isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.errorPrefix(e.toString()))),
+        SnackBar(content: Text(t.errorPrefix(e.toString())), backgroundColor: Colors.redAccent),
       );
+    }
+  }
+
+  void _nextPage() {
+    if (_currentPage < _totalPages - 1) {
+      _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+    }
+  }
+
+  void _prevPage() {
+    if (_currentPage > 0) {
+      _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     }
   }
 
   @override
   void dispose() {
+    _pageController.dispose();
     interestsController.dispose();
     strengthsController.dispose();
     incomeController.dispose();
@@ -224,235 +220,312 @@ class _ProfileInputScreenState extends State<ProfileInputScreen> {
     final t = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: const Color(0xFF0B0E14), // Elite dark background
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
           t.profileTitle,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              t.profileIntro,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF1A1A2E),
-                height: 1.5,
-              ),
+      body: Stack(
+        children: [
+          // Background Glow Orbs for consistency
+          Positioned(
+            top: -50,
+            right: -50,
+            child: Container(
+              width: 250, height: 250,
+              decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.blueAccent.withOpacity(0.15), boxShadow: [BoxShadow(color: Colors.blueAccent.withOpacity(0.2), blurRadius: 100)]),
             ),
-            const SizedBox(height: 24),
-
-            _buildLabel(t.fieldStream),
-            const SizedBox(height: 6),
-            _buildDropdown<String>(
-              value: selectedStream,
-              items: streamCodes,
-              labelFor: (code) => _streamLabel(code, t),
-              onChanged: (v) {
-                if (v != null) setState(() => selectedStream = v);
-              },
+          ),
+          Positioned(
+            bottom: 50,
+            left: -50,
+            child: Container(
+              width: 300, height: 300,
+              decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.purpleAccent.withOpacity(0.1), boxShadow: [BoxShadow(color: Colors.purpleAccent.withOpacity(0.15), blurRadius: 120)]),
             ),
-            const SizedBox(height: 16),
-
-            _buildLabel(t.fieldInterests),
-            _buildField(
-              controller: interestsController,
-              hint: t.hintInterests,
-              maxLines: 2,
-            ),
-            const SizedBox(height: 16),
-
-            _buildLabel(t.fieldStrengths),
-            _buildField(
-              controller: strengthsController,
-              hint: t.hintStrengths,
-              maxLines: 2,
-            ),
-            const SizedBox(height: 16),
-
-            _buildLabel(t.fieldMarks),
-            _buildField(
-              controller: marksController,
-              hint: t.hintMarks,
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 16),
-
-            // ── Conditional entrance exam field ──────────────────
-            // Medical → NEET score, Non-Medical → JEE percentile
-            if (selectedStream == 'Medical') ...[
-              _buildLabel(t.fieldNeet),
-              _buildField(
-                controller: neetScoreController,
-                hint: t.hintNeet,
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(height: 16),
-            ] else if (selectedStream == 'Non-Medical') ...[
-              _buildLabel(t.fieldJee),
-              _buildField(
-                controller: jeePercentileController,
-                hint: t.hintJee,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
-
-            _buildLabel(t.fieldIncome),
-            _buildField(
-              controller: incomeController,
-              hint: t.hintIncome,
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 16),
-
-            _buildLabel(t.fieldCategory),
-            const SizedBox(height: 6),
-            _buildDropdown<String>(
-              value: selectedCategory,
-              items: categoryCodes,
-              labelFor: (code) => _categoryLabel(code, t),
-              onChanged: (v) {
-                if (v != null) setState(() => selectedCategory = v);
-              },
-            ),
-            const SizedBox(height: 16),
-
-            _buildLabel(t.fieldBudget),
-            _buildField(
-              controller: budgetController,
-              hint: t.hintBudget,
-            ),
-            const SizedBox(height: 16),
-
-            _buildLabel(t.fieldLocation),
-            _buildField(
-              controller: locationController,
-              hint: t.hintLocation,
-            ),
-            const SizedBox(height: 32),
-
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: isLoading ? null : analyseCareer,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+          ),
+          
+          SafeArea(
+            child: Column(
+              children: [
+                // Custom Progress Bar
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10),
+                  child: Row(
+                    children: List.generate(_totalPages, (index) {
+                      return Expanded(
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: _currentPage >= index ? Colors.blueAccent : Colors.white.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(3),
+                            boxShadow: _currentPage >= index ? [BoxShadow(color: Colors.blueAccent.withOpacity(0.5), blurRadius: 8)] : [],
+                          ),
+                        ),
+                      );
+                    }),
                   ),
                 ),
-                child: isLoading
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
+                
+                // Stepper Forms
+                Expanded(
+                  child: PageView(
+                    controller: _pageController,
+                    physics: const NeverScrollableScrollPhysics(), // Disable swipe, force button use
+                    onPageChanged: (int page) {
+                      setState(() { _currentPage = page; });
+                    },
+                    children: [
+                      _buildStep1Basics(t),
+                      _buildStep2Academics(t),
+                      _buildStep3Logistics(t),
+                      _buildStep4Core(t),
+                    ],
+                  ),
+                ),
+                
+                // Bottom Navigation Bar
+                Container(
+                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.3),
+                    border: Border(top: BorderSide(color: Colors.white.withOpacity(0.05))),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Back Button
+                      _currentPage > 0 
+                        ? TextButton(
+                            onPressed: isLoading ? null : _prevPage,
+                            child: const Text("Back", style: TextStyle(color: Colors.white70, fontSize: 16)),
+                          )
+                        : const SizedBox(width: 60), // Placeholder to keep layout balanced
+                      
+                      // Next / Analyze Button (UPDATED WITH TEXT SPINNER)
+                      _currentPage < _totalPages - 1
+                        ? ElevatedButton(
+                            onPressed: _nextPage,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blueAccent,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                             ),
+                            child: const Text("Next", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                          )
+                        : ElevatedButton(
+                            onPressed: isLoading ? null : analyseCareer,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blueAccent,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                              elevation: 10,
+                              shadowColor: Colors.blueAccent.withOpacity(0.5),
+                            ),
+                            child: isLoading
+                                ? Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)),
+                                      const SizedBox(width: 12),
+                                      Text(t.submitAnalysing, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1, color: Colors.white)),
+                                    ],
+                                  )
+                                : Text(t.submitFindPath, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1)),
                           ),
-                          const SizedBox(width: 12),
-                          Text(t.submitAnalysing),
-                        ],
-                      )
-                    : Text(
-                        t.submitFindPath,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // --- Step 1: Basics ---
+  Widget _buildStep1Basics(AppLocalizations t) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("Let's cover the basics 🚀", style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: Colors.white)),
+          const SizedBox(height: 10),
+          Text(t.profileIntro, style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.7))),
+          const SizedBox(height: 40),
+          
+          _buildLabel(t.fieldStream),
+          _buildDarkDropdown<String>(
+            value: selectedStream,
+            items: streamCodes,
+            labelFor: (code) => _streamLabel(code, t),
+            onChanged: (v) { if (v != null) setState(() => selectedStream = v); },
+          ),
+          const SizedBox(height: 24),
+
+          _buildLabel(t.fieldCategory),
+          _buildDarkDropdown<String>(
+            value: selectedCategory,
+            items: categoryCodes,
+            labelFor: (code) => _categoryLabel(code, t),
+            onChanged: (v) { if (v != null) setState(() => selectedCategory = v); },
+          ),
+        ],
+      ),
+    );
+  }
+
+  // --- Step 2: Academics ---
+  Widget _buildStep2Academics(AppLocalizations t) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("Academic Profile 📚", style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: Colors.white)),
+          const SizedBox(height: 10),
+          Text("Help AI understand your academic standing.", style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.7))),
+          const SizedBox(height: 40),
+
+          _buildLabel(t.fieldMarks),
+          _buildDarkField(controller: marksController, hint: t.hintMarks, keyboardType: TextInputType.number),
+          const SizedBox(height: 24),
+
+          if (selectedStream == 'Medical') ...[
+            _buildLabel(t.fieldNeet),
+            _buildDarkField(controller: neetScoreController, hint: t.hintNeet, keyboardType: TextInputType.number),
+          ] else if (selectedStream == 'Non-Medical') ...[
+            _buildLabel(t.fieldJee),
+            _buildDarkField(controller: jeePercentileController, hint: t.hintJee, keyboardType: const TextInputType.numberWithOptions(decimal: true)),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // --- Step 3: Logistics ---
+  Widget _buildStep3Logistics(AppLocalizations t) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("Logistics & Reality 💸", style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: Colors.white)),
+          const SizedBox(height: 10),
+          Text("We use this to find the best government schemes for you.", style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.7))),
+          const SizedBox(height: 40),
+
+          _buildLabel(t.fieldIncome),
+          _buildDarkField(controller: incomeController, hint: t.hintIncome, keyboardType: TextInputType.number),
+          const SizedBox(height: 24),
+
+          _buildLabel(t.fieldBudget),
+          _buildDarkField(controller: budgetController, hint: t.hintBudget),
+          const SizedBox(height: 24),
+
+          _buildLabel(t.fieldLocation),
+          _buildDarkField(controller: locationController, hint: t.hintLocation),
+        ],
+      ),
+    );
+  }
+
+  // --- Step 4: The Core (AI Part) ---
+  Widget _buildStep4Core(AppLocalizations t) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("What drives you? 🧠", style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: Colors.white)),
+          const SizedBox(height: 10),
+          Text("This is where the magic happens. Be descriptive!", style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.7))),
+          const SizedBox(height: 40),
+
+          _buildLabel(t.fieldInterests),
+          _buildDarkField(controller: interestsController, hint: t.hintInterests, maxLines: 3),
+          const SizedBox(height: 24),
+
+          _buildLabel(t.fieldStrengths),
+          _buildDarkField(controller: strengthsController, hint: t.hintStrengths, maxLines: 3),
+        ],
+      ),
+    );
+  }
+
+  // --- Elite UI Components ---
+  Widget _buildLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0, left: 4),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white, letterSpacing: 0.5),
+      ),
+    );
+  }
+
+  Widget _buildDarkField({required TextEditingController controller, required String hint, int maxLines = 1, TextInputType? keyboardType}) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: TextField(
+          controller: controller,
+          maxLines: maxLines,
+          keyboardType: keyboardType,
+          style: const TextStyle(color: Colors.white, fontSize: 16),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 14),
+            filled: true,
+            fillColor: Colors.white.withOpacity(0.05),
+            contentPadding: const EdgeInsets.all(18),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.white.withOpacity(0.1))),
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: Colors.blueAccent, width: 1.5)),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDarkDropdown<T>({required T value, required List<T> items, required String Function(T) labelFor, required ValueChanged<T?> onChanged}) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white.withOpacity(0.1)),
+          ),
+          child: Theme(
+            data: Theme.of(context).copyWith(canvasColor: const Color(0xFF1A1A2E)), // Dark dropdown menu
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<T>(
+                value: value,
+                isExpanded: true,
+                icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Colors.white70),
+                style: const TextStyle(color: Colors.white, fontSize: 16),
+                items: items.map((code) => DropdownMenuItem<T>(value: code, child: Text(labelFor(code)))).toList(),
+                onChanged: onChanged,
               ),
             ),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLabel(String text) {
-    return Text(
-      text,
-      style: const TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        color: Color(0xFF1A1A2E),
-      ),
-    );
-  }
-
-  Widget _buildField({
-    required TextEditingController controller,
-    required String hint,
-    int maxLines = 1,
-    TextInputType? keyboardType,
-  }) {
-    return TextField(
-      controller: controller,
-      maxLines: maxLines,
-      keyboardType: keyboardType,
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: TextStyle(color: Colors.grey[400], fontSize: 13),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.blue),
-        ),
-      ),
-    );
-  }
-
-  /// Dropdown that displays localized labels but stores English codes.
-  /// `labelFor` maps code → user-facing string.
-  Widget _buildDropdown<T>({
-    required T value,
-    required List<T> items,
-    required String Function(T) labelFor,
-    required ValueChanged<T?> onChanged,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<T>(
-          value: value,
-          isExpanded: true,
-          items: items
-              .map(
-                (code) =>
-                    DropdownMenuItem<T>(value: code, child: Text(labelFor(code))),
-              )
-              .toList(),
-          onChanged: onChanged,
+          ),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui'; // For Glassmorphism
 import '../services/gemini_service.dart';
 import '../l10n/app_localizations.dart';
 
@@ -16,9 +17,7 @@ class _VisualRoadmapScreenState extends State<VisualRoadmapScreen> {
   String _careerName = '';
 
   // Tracks which milestones the student has ticked off.
-  // Key format: "phaseIndex:milestoneIndex"
   final Set<String> _completed = {};
-
   bool _initialised = false;
 
   @override
@@ -28,9 +27,7 @@ class _VisualRoadmapScreenState extends State<VisualRoadmapScreen> {
     _initialised = true;
 
     final t = AppLocalizations.of(context)!;
-
-    final career =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final career = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
     if (career == null) {
       setState(() {
@@ -99,109 +96,159 @@ class _VisualRoadmapScreenState extends State<VisualRoadmapScreen> {
     final t = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: const Color(0xFF0B0E14), // Elite Dark Background
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
           t.roadmapTitle,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1),
         ),
       ),
-      body: _loading
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CircularProgressIndicator(),
-                  const SizedBox(height: 16),
-                  Text(
-                    t.roadmapLoading,
-                    style: const TextStyle(color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            )
-          : _error != null
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Text(
-                  _error!,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 14),
-                ),
-              ),
-            )
-          : _buildRoadmap(t),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Background Neon Orbs
+          Positioned(
+            top: 0,
+            left: -100,
+            child: Container(
+              width: 300, height: 300,
+              decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.blueAccent.withOpacity(0.15), boxShadow: [BoxShadow(color: Colors.blueAccent.withOpacity(0.2), blurRadius: 150)]),
+            ),
+          ),
+          Positioned(
+            bottom: -50,
+            right: -100,
+            child: Container(
+              width: 350, height: 350,
+              decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.purpleAccent.withOpacity(0.1), boxShadow: [BoxShadow(color: Colors.purpleAccent.withOpacity(0.15), blurRadius: 180)]),
+            ),
+          ),
+
+          // Glassmorphism Overlay
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 40.0, sigmaY: 40.0),
+            child: Container(color: Colors.transparent),
+          ),
+
+          // Main Content
+          SafeArea(
+            child: _loading
+                ? _buildLoadingState(t)
+                : _error != null
+                    ? _buildErrorState()
+                    : _buildRoadmapContent(t),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildRoadmap(AppLocalizations t) {
+  Widget _buildLoadingState(AppLocalizations t) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(
+            height: 60, width: 60,
+            child: CircularProgressIndicator(color: Colors.blueAccent, strokeWidth: 3),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            t.roadmapLoading,
+            style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 16, letterSpacing: 1),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Text(
+          _error!,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 16, color: Colors.redAccent),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRoadmapContent(AppLocalizations t) {
     final phases = _roadmap!['roadmap'] as List;
     final exams = (_roadmap!['entrance_exams'] as List?) ?? [];
     final skills = (_roadmap!['key_skills'] as List?) ?? [];
     final cost = _roadmap!['cost_breakdown']?.toString() ?? '';
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header with career name and progress
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: Colors.grey.shade200),
-            ),
+          // 1. Progress Header Card
+          _glassCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _careerName, // career name stays English by design
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A1A2E),
-                  ),
+                  _careerName,
+                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: 0.5),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  t.milestonesProgress(_completed.length, _totalMilestones()),
-                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                ),
-                const SizedBox(height: 8),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: LinearProgressIndicator(
-                    value: _progress(),
-                    minHeight: 8,
-                    backgroundColor: Colors.grey[200],
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      Colors.blue,
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      t.milestonesProgress(_completed.length, _totalMilestones()),
+                      style: TextStyle(fontSize: 13, color: Colors.white.withOpacity(0.6), fontWeight: FontWeight.w600),
                     ),
-                  ),
+                    Text(
+                      '${(_progress() * 100).toInt()}%',
+                      style: const TextStyle(fontSize: 14, color: Colors.blueAccent, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                // Glowing Progress Bar
+                Stack(
+                  children: [
+                    Container(height: 8, decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(4))),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeOutCubic,
+                          height: 8,
+                          width: constraints.maxWidth * _progress(),
+                          decoration: BoxDecoration(
+                            color: Colors.blueAccent,
+                            borderRadius: BorderRadius.circular(4),
+                            boxShadow: [BoxShadow(color: Colors.blueAccent.withOpacity(0.6), blurRadius: 8, spreadRadius: 1)],
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
+          const SizedBox(height: 24),
 
-          const SizedBox(height: 16),
-
-          // Phase timeline
+          // 2. Timeline Title
           Text(
             t.yourJourney,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1A1A2E),
-            ),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 20),
 
+          // 3. Phases Timeline
           ...List.generate(phases.length, (phaseIndex) {
             final phase = phases[phaseIndex] as Map;
             final phaseName = phase['phase']?.toString() ?? 'Phase';
@@ -211,157 +258,145 @@ class _VisualRoadmapScreenState extends State<VisualRoadmapScreen> {
 
             return _phaseCard(
               phaseIndex: phaseIndex,
-              phaseName: phaseName, // already in user's language (Gemini)
+              phaseName: phaseName,
               phaseDuration: phaseDuration,
               milestones: milestones,
               isLast: isLast,
             );
           }),
 
-          const SizedBox(height: 16),
-
-          // Summary info
-          if (exams.isNotEmpty) _infoCard(t.summaryEntranceExams, exams.join(' • ')),
-          if (skills.isNotEmpty) _infoCard(t.summaryKeySkills, skills.join(' • ')),
-          if (cost.isNotEmpty) _infoCard(t.summaryCostSummary, cost),
-
           const SizedBox(height: 20),
+
+          // 4. Summary Info Cards
+          if (exams.isNotEmpty) _infoCard(t.summaryEntranceExams, exams.join(' • '), Icons.school_rounded),
+          if (skills.isNotEmpty) _infoCard(t.summaryKeySkills, skills.join(' • '), Icons.psychology_rounded),
+          if (cost.isNotEmpty) _infoCard(t.summaryCostSummary, cost, Icons.account_balance_wallet_rounded),
+
+          const SizedBox(height: 40),
         ],
       ),
     );
   }
 
-  Widget _phaseCard({
-    required int phaseIndex,
-    required String phaseName,
-    required String phaseDuration,
-    required List milestones,
-    required bool isLast,
-  }) {
+  // ───────────── ELITE UI HELPERS ─────────────
+
+  Widget _glassCard({required Widget child}) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 5))],
+          ),
+          child: child,
+        ),
+      ),
+    );
+  }
+
+  Widget _phaseCard({required int phaseIndex, required String phaseName, required String phaseDuration, required List milestones, required bool isLast}) {
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Timeline dot + line
+          // Timeline Node (Glowing Dot & Line)
           Column(
             children: [
               Container(
-                width: 24,
-                height: 24,
+                width: 28, height: 28,
                 decoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: const Color(0xFF0B0E14),
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 3),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blue.withOpacity(0.3),
-                      blurRadius: 6,
-                      spreadRadius: 1,
-                    ),
-                  ],
+                  border: Border.all(color: Colors.blueAccent, width: 2.5),
+                  boxShadow: [BoxShadow(color: Colors.blueAccent.withOpacity(0.5), blurRadius: 10, spreadRadius: 1)],
                 ),
                 child: Center(
-                  child: Text(
-                    '${phaseIndex + 1}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: Text('${phaseIndex + 1}', style: const TextStyle(color: Colors.blueAccent, fontSize: 12, fontWeight: FontWeight.bold)),
                 ),
               ),
               if (!isLast)
                 Expanded(
-                  child: Container(
-                    width: 2,
-                    color: Colors.blue.withOpacity(0.3),
-                  ),
+                  child: Container(width: 2, margin: const EdgeInsets.symmetric(vertical: 4), color: Colors.blueAccent.withOpacity(0.3)),
                 ),
             ],
           ),
-          const SizedBox(width: 14),
-          // Phase card
+          const SizedBox(width: 16),
+          
+          // Phase Content Glass Card
           Expanded(
             child: Container(
-              margin: const EdgeInsets.only(bottom: 16),
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade200),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    phaseName,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1A1A2E),
+              margin: const EdgeInsets.only(bottom: 24),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    padding: const EdgeInsets.all(18),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.03),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.white.withOpacity(0.08)),
                     ),
-                  ),
-                  if (phaseDuration.isNotEmpty) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      phaseDuration,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: 10),
-                  ...List.generate(milestones.length, (mIndex) {
-                    final milestone = milestones[mIndex].toString();
-                    final key = '$phaseIndex:$mIndex';
-                    final done = _completed.contains(key);
-                    return InkWell(
-                      onTap: () {
-                        setState(() {
-                          if (done) {
-                            _completed.remove(key);
-                          } else {
-                            _completed.add(key);
-                          }
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              done
-                                  ? Icons.check_circle
-                                  : Icons.radio_button_unchecked,
-                              color: done ? Colors.green : Colors.grey[400],
-                              size: 20,
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                milestone,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  height: 1.4,
-                                  color: done
-                                      ? Colors.grey[500]
-                                      : const Color(0xFF1A1A2E),
-                                  decoration: done
-                                      ? TextDecoration.lineThrough
-                                      : TextDecoration.none,
-                                ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(phaseName, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 0.5)),
+                        if (phaseDuration.isNotEmpty) ...[
+                          const SizedBox(height: 6),
+                          Text(phaseDuration, style: TextStyle(fontSize: 13, color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.w600)),
+                        ],
+                        const SizedBox(height: 16),
+                        ...List.generate(milestones.length, (mIndex) {
+                          final milestone = milestones[mIndex].toString();
+                          final key = '$phaseIndex:$mIndex';
+                          final done = _completed.contains(key);
+                          
+                          return InkWell(
+                            onTap: () => setState(() { done ? _completed.remove(key) : _completed.add(key); }),
+                            borderRadius: BorderRadius.circular(8),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    margin: const EdgeInsets.only(top: 2),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: done ? Colors.greenAccent : Colors.transparent,
+                                      border: Border.all(color: done ? Colors.greenAccent : Colors.white.withOpacity(0.3), width: 1.5),
+                                      boxShadow: done ? [BoxShadow(color: Colors.greenAccent.withOpacity(0.4), blurRadius: 8)] : [],
+                                    ),
+                                    child: Icon(Icons.check, size: 16, color: done ? const Color(0xFF0B0E14) : Colors.transparent),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: AnimatedDefaultTextStyle(
+                                      duration: const Duration(milliseconds: 200),
+                                      style: TextStyle(
+                                        fontSize: 14, height: 1.5,
+                                        color: done ? Colors.white.withOpacity(0.4) : Colors.white.withOpacity(0.85),
+                                        decoration: done ? TextDecoration.lineThrough : TextDecoration.none,
+                                        fontFamily: 'Inter', // Or whatever default font you use
+                                      ),
+                                      child: Text(milestone),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
-                ],
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -370,33 +405,28 @@ class _VisualRoadmapScreenState extends State<VisualRoadmapScreen> {
     );
   }
 
-  Widget _infoCard(String label, String value) {
+  Widget _infoCard(String label, String value, IconData icon) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.blue.withOpacity(0.15)),
+        color: Colors.blueAccent.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.blueAccent.withOpacity(0.2)),
       ),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Colors.blue[800],
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 13,
-              color: Color(0xFF1A1A2E),
-              height: 1.4,
+          Icon(icon, color: Colors.blueAccent.shade100, size: 24),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Colors.blueAccent.shade100, letterSpacing: 0.5)),
+                const SizedBox(height: 6),
+                Text(value, style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.85), height: 1.5)),
+              ],
             ),
           ),
         ],

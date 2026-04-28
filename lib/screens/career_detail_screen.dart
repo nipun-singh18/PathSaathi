@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'dart:ui'; // For Glassmorphism
 import '../services/knowledge_base.dart';
 import '../l10n/app_localizations.dart';
 
 class CareerDetailScreen extends StatelessWidget {
   const CareerDetailScreen({super.key});
 
+  // Neon Color Palette for Dark Theme
   Color _scoreColor(int score) {
-    if (score >= 71) return Colors.green;
-    if (score >= 41) return Colors.orange;
-    return Colors.red;
+    if (score >= 71) return Colors.greenAccent;
+    if (score >= 41) return Colors.orangeAccent;
+    return Colors.redAccent;
   }
 
   String _scoreLabel(int score, AppLocalizations t) {
@@ -20,19 +22,17 @@ class CareerDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
-
-    final career =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final career = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
     if (career == null) {
       return Scaffold(
-        appBar: AppBar(title: Text(t.careerDetailsTitle)),
-        body: Center(
-          child: Text(
-            t.noCareerData,
-            textAlign: TextAlign.center,
-          ),
+        backgroundColor: const Color(0xFF0B0E14),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent, 
+          elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.white),
         ),
+        body: Center(child: Text(t.noCareerData, style: const TextStyle(color: Colors.white70))),
       );
     }
 
@@ -46,7 +46,6 @@ class CareerDetailScreen extends StatelessWidget {
     final effortPayoff = (career['effort_payoff'] as num?)?.toInt() ?? 0;
     final interestMatch = (career['interest_match'] as num?)?.toInt() ?? 0;
 
-    // Pull extra verified data from the knowledge base if available
     final kbEntry = KnowledgeBase.instance.careerByName(careerName);
     final entranceExam = kbEntry?['entrance_exam']?.toString() ?? '—';
     final cutoff = kbEntry?['cutoff']?['raw']?.toString() ?? '—';
@@ -54,227 +53,218 @@ class CareerDetailScreen extends StatelessWidget {
     final monthlySalary = kbEntry?['monthly_salary_raw']?.toString() ?? '—';
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: const Color(0xFF0B0E14), // Elite Dark Background
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
           t.careerDetailsTitle,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // -- CAREER HEADER CARD --
-            _card(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // ------------------------------------
+          // Background Neon Orbs
+          // ------------------------------------
+          Positioned(
+            top: 0,
+            right: -100,
+            child: Container(
+              width: 350, height: 350,
+              decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.blueAccent.withOpacity(0.15), boxShadow: [BoxShadow(color: Colors.blueAccent.withOpacity(0.2), blurRadius: 150)]),
+            ),
+          ),
+          Positioned(
+            bottom: -50,
+            left: -100,
+            child: Container(
+              width: 300, height: 300,
+              decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.purpleAccent.withOpacity(0.12), boxShadow: [BoxShadow(color: Colors.purpleAccent.withOpacity(0.15), blurRadius: 180)]),
+            ),
+          ),
+
+          // Glassmorphism Overlay
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 40.0, sigmaY: 40.0),
+            child: Container(color: Colors.transparent),
+          ),
+
+          // ------------------------------------
+          // Main Scrollable Content
+          // ------------------------------------
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    careerName, // Career name — always English by design
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1A1A2E),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 8,
+                  // -- CAREER HEADER CARD --
+                  _glassCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          careerName,
+                          style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: 0.5),
                         ),
-                        decoration: BoxDecoration(
-                          color: _scoreColor(score).withOpacity(0.12),
-                          borderRadius: BorderRadius.circular(20),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: _scoreColor(score).withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: _scoreColor(score).withOpacity(0.5)),
+                                boxShadow: [BoxShadow(color: _scoreColor(score).withOpacity(0.3), blurRadius: 10)],
+                              ),
+                              child: Text(
+                                t.realityScoreValue(score),
+                                style: TextStyle(color: _scoreColor(score), fontWeight: FontWeight.w900, fontSize: 16),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              _scoreLabel(score, t),
+                              style: TextStyle(color: _scoreColor(score), fontWeight: FontWeight.w700, fontSize: 14, letterSpacing: 0.5),
+                            ),
+                          ],
                         ),
-                        child: Text(
-                          t.realityScoreValue(score),
-                          style: TextStyle(
-                            color: _scoreColor(score),
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
+                        if (why.isNotEmpty) ...[
+                          const SizedBox(height: 20),
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.05),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.white.withOpacity(0.1)),
+                            ),
+                            child: Text(
+                              why,
+                              style: TextStyle(color: Colors.white.withOpacity(0.85), fontSize: 14, fontStyle: FontStyle.italic, height: 1.6),
+                            ),
                           ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        _scoreLabel(score, t),
-                        style: TextStyle(
-                          color: _scoreColor(score),
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (why.isNotEmpty) ...[
-                    const SizedBox(height: 14),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[50],
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey.shade200),
-                      ),
-                      child: Text(
-                        why, // Already in user's language thanks to Gemini
-                        style: TextStyle(
-                          color: Colors.grey[800],
-                          fontSize: 13,
-                          fontStyle: FontStyle.italic,
-                          height: 1.5,
-                        ),
-                      ),
+                        ],
+                      ],
                     ),
-                  ],
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // -- SCORE BREAKDOWN CARD --
+                  _glassCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          t.scoreBreakdownTitle,
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 0.5),
+                        ),
+                        const SizedBox(height: 20),
+                        _neonScoreBar(t.subscoreAcademicFit, academicFit),
+                        const SizedBox(height: 16),
+                        _neonScoreBar(t.subscoreFinancialFit, financialFit),
+                        const SizedBox(height: 16),
+                        _neonScoreBar(t.subscoreEffortPayoff, effortPayoff),
+                        const SizedBox(height: 16),
+                        _neonScoreBar(t.subscoreInterestMatch, interestMatch),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // -- FACTS CARD --
+                  _glassCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          t.keyFactsTitle,
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 0.5),
+                        ),
+                        const SizedBox(height: 16),
+                        _factRow(Icons.access_time_rounded, t.factDuration, duration),
+                        _factRow(Icons.school_rounded, t.factEntranceExam, entranceExam),
+                        _factRow(Icons.bar_chart_rounded, t.factRealisticCutoff, cutoff),
+                        _factRow(Icons.currency_rupee_rounded, t.factCourseCost, costEstimate),
+                        _factRow(Icons.work_rounded, t.factExpectedSalary, monthlySalary),
+                        if (employmentRate != null)
+                          _factRow(Icons.trending_up_rounded, t.factEmploymentRate, '$employmentRate%'),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  // -- ACTION BUTTONS --
+                  _actionButton(
+                    context: context,
+                    label: t.btnViewRoadmap,
+                    icon: Icons.timeline_rounded,
+                    route: '/visual_roadmap',
+                    args: career,
+                    color: Colors.blueAccent,
+                    isPrimary: true,
+                  ),
+                  const SizedBox(height: 14),
+                  _actionButton(
+                    context: context,
+                    label: t.btnViewSchemes,
+                    icon: Icons.account_balance_rounded,
+                    route: '/government_schemes',
+                    args: career,
+                    color: Colors.blueAccent.shade100,
+                    isPrimary: false,
+                  ),
+                  const SizedBox(height: 14),
+                  _actionButton(
+                    context: context,
+                    label: t.btnAlternatePaths,
+                    icon: Icons.swap_horiz_rounded,
+                    route: '/alternate_paths',
+                    args: career,
+                    color: Colors.orangeAccent,
+                    isPrimary: false,
+                  ),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),
-
-            const SizedBox(height: 14),
-
-            // -- SCORE BREAKDOWN CARD --
-            _card(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    t.scoreBreakdownTitle,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1A1A2E),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  _scoreBar(t.subscoreAcademicFit, academicFit),
-                  const SizedBox(height: 10),
-                  _scoreBar(t.subscoreFinancialFit, financialFit),
-                  const SizedBox(height: 10),
-                  _scoreBar(t.subscoreEffortPayoff, effortPayoff),
-                  const SizedBox(height: 10),
-                  _scoreBar(t.subscoreInterestMatch, interestMatch),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 14),
-
-            // -- FACTS CARD --
-            _card(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    t.keyFactsTitle,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1A1A2E),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  _factRow(Icons.access_time, t.factDuration, duration),
-                  _factRow(Icons.school, t.factEntranceExam, entranceExam),
-                  _factRow(Icons.bar_chart, t.factRealisticCutoff, cutoff),
-                  _factRow(Icons.currency_rupee, t.factCourseCost, costEstimate),
-                  _factRow(Icons.work, t.factExpectedSalary, monthlySalary),
-                  if (employmentRate != null)
-                    _factRow(
-                      Icons.trending_up,
-                      t.factEmploymentRate,
-                      '$employmentRate%',
-                    ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            // -- ACTION BUTTONS --
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () => Navigator.pushNamed(
-                  context,
-                  '/visual_roadmap',
-                  arguments: career,
-                ),
-                style: _primaryBtn(),
-                icon: const Icon(Icons.timeline),
-                label: Text(t.btnViewRoadmap),
-              ),
-            ),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () => Navigator.pushNamed(
-                  context,
-                  '/government_schemes',
-                  arguments: career,
-                ),
-                style: _secondaryBtn(),
-                icon: const Icon(Icons.account_balance),
-                label: Text(t.btnViewSchemes),
-              ),
-            ),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () => Navigator.pushNamed(
-                  context,
-                  '/alternate_paths',
-                  arguments: career,
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange[50],
-                  foregroundColor: Colors.orange[900],
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                icon: const Icon(Icons.swap_horiz),
-                label: Text(t.btnAlternatePaths),
-              ),
-            ),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ───────────── UI HELPERS ─────────────
-
-  Widget _card({required Widget child}) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.grey.shade200),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: child,
     );
   }
 
-  Widget _scoreBar(String label, int value) {
+  // ───────────── ELITE UI HELPERS ─────────────
+
+  Widget _glassCard({required Widget child}) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            boxShadow: [
+              BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 5)),
+            ],
+          ),
+          child: child,
+        ),
+      ),
+    );
+  }
+
+  Widget _neonScoreBar(String label, int value) {
     final color = _scoreColor(value);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -282,33 +272,35 @@ class CareerDetailScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF1A1A2E),
-              ),
-            ),
-            Text(
-              '$value/100',
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: color,
-              ),
-            ),
+            Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white70)),
+            Text('$value/100', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: color)),
           ],
         ),
-        const SizedBox(height: 6),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(6),
-          child: LinearProgressIndicator(
-            value: value / 100,
-            minHeight: 8,
-            backgroundColor: Colors.grey[200],
-            valueColor: AlwaysStoppedAnimation<Color>(color),
-          ),
+        const SizedBox(height: 8),
+        Stack(
+          children: [
+            // Background Track
+            Container(
+              height: 8,
+              decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(4)),
+            ),
+            // Glowing Progress Bar
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 1000),
+                  curve: Curves.easeOutCubic,
+                  height: 8,
+                  width: constraints.maxWidth * (value / 100),
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(4),
+                    boxShadow: [BoxShadow(color: color.withOpacity(0.6), blurRadius: 8, spreadRadius: 1)],
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ],
     );
@@ -316,50 +308,58 @@ class CareerDetailScreen extends StatelessWidget {
 
   Widget _factRow(IconData icon, String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 18, color: Colors.grey[600]),
-          const SizedBox(width: 10),
+          Icon(icon, size: 20, color: Colors.white54),
+          const SizedBox(width: 12),
           SizedBox(
-            width: 130,
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 13,
-                color: Colors.grey[700],
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            width: 140,
+            child: Text(label, style: const TextStyle(fontSize: 14, color: Colors.white54, fontWeight: FontWeight.w500)),
           ),
           Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF1A1A2E),
-              ),
-            ),
+            child: Text(value, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white)),
           ),
         ],
       ),
     );
   }
 
-  ButtonStyle _primaryBtn() => ElevatedButton.styleFrom(
-    backgroundColor: Colors.blue,
-    foregroundColor: Colors.white,
-    padding: const EdgeInsets.symmetric(vertical: 14),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-  );
-
-  ButtonStyle _secondaryBtn() => ElevatedButton.styleFrom(
-    backgroundColor: Colors.white,
-    foregroundColor: Colors.blue,
-    side: const BorderSide(color: Colors.blue),
-    padding: const EdgeInsets.symmetric(vertical: 14),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-  );
+  Widget _actionButton({
+    required BuildContext context,
+    required String label,
+    required IconData icon,
+    required String route,
+    required dynamic args,
+    required Color color,
+    required bool isPrimary,
+  }) {
+    return InkWell(
+      onTap: () => Navigator.pushNamed(context, route, arguments: args),
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: isPrimary ? color.withOpacity(0.2) : Colors.white.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: isPrimary ? color.withOpacity(0.5) : color.withOpacity(0.3), width: 1.5),
+          boxShadow: [
+            if (isPrimary) BoxShadow(color: color.withOpacity(0.2), blurRadius: 15, spreadRadius: 2),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: isPrimary ? Colors.white : color, size: 22),
+            const SizedBox(width: 10),
+            Text(
+              label,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: isPrimary ? Colors.white : color, letterSpacing: 0.5),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

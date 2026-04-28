@@ -9,7 +9,10 @@ class GeminiService {
 
   GeminiService() {
     _model = GenerativeModel(
-      model: 'gemini-2.5-flash',
+      // gemini-2.5-flash is a thinking model — use gemini-2.0-flash for
+      // reliable JSON-only output without thinking token interference.
+      // Switch back to 'gemini-2.5-flash' only if you handle ThinkingConfig.
+      model: 'gemini-2.5-flash-lite',
       apiKey: dotenv.env['GEMINI_API_KEY']!,
     );
   }
@@ -472,12 +475,14 @@ RULES:
     return await _callGemini(prompt, fallback: {"alternate_careers": []});
   }
 
-  // ── SHARED GEMINI CALLER (with 503 retry) ─────────────
+  // ── SHARED GEMINI CALLER (with retry + error propagation) ──────────────
   Future<Map<String, dynamic>> _callGemini(
     String prompt, {
     required Map<String, dynamic> fallback,
     int retries = 2,
   }) async {
+    Object? lastError;
+
     for (int attempt = 0; attempt <= retries; attempt++) {
       try {
         final content = [Content.text(prompt)];
@@ -485,6 +490,8 @@ RULES:
         final text = response.text ?? '';
 
         var cleaned = text.trim();
+
+        // Strip markdown fences (```json ... ```)
         if (cleaned.startsWith('```')) {
           cleaned = cleaned
               .replaceAll(RegExp(r'^```(?:json)?\s*'), '')
@@ -492,17 +499,39 @@ RULES:
               .trim();
         }
 
+        // Strip thinking-model tags if present (<think>...</think> or <thinking>...</thinking>)
+        cleaned = cleaned
+            .replaceAll(RegExp(r'<think>.*?</think>', dotAll: true), '')
+            .replaceAll(RegExp(r'<thinking>.*?</thinking>', dotAll: true), '')
+            .trim();
+
+        // Extract first JSON object/array if there's surrounding text
+        final jsonMatch = RegExp(r'\{[\s\S]*\}').firstMatch(cleaned);
+        if (jsonMatch != null) {
+          cleaned = jsonMatch.group(0)!;
+        }
+
         return jsonDecode(cleaned) as Map<String, dynamic>;
       } catch (e) {
+        lastError = e;
         // ignore: avoid_print
         print('Gemini error (attempt ${attempt + 1}): $e');
-        if (attempt < retries && e.toString().contains('503')) {
-          await Future.delayed(Duration(seconds: 2 * (attempt + 1)));
+
+        final errStr = e.toString();
+        // Retry on 503 (overloaded) and 429 (rate limit)
+        if (attempt < retries &&
+            (errStr.contains('503') || errStr.contains('429'))) {
+          await Future.delayed(Duration(seconds: 3 * (attempt + 1)));
           continue;
         }
-        return fallback;
+        break;
       }
     }
-    return fallback;
+
+    // Re-throw so the caller (analyseCareer) can show a proper error message
+    // instead of silently navigating with empty data.
+    throw Exception(
+      lastError?.toString() ?? 'Gemini API call failed after $retries retries',
+    );
   }
 }

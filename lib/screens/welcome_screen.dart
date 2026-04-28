@@ -50,6 +50,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
+    // Current language check for dynamic spacing
+    final isHindi = LanguageService.instance.isHindi;
 
     return Scaffold(
       backgroundColor: const Color(0xFF0B0E14), // Deep premium dark background
@@ -141,11 +143,12 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     // App Name Header
                     Text(
                       t.appTitle,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 48,
                         fontWeight: FontWeight.w900,
                         color: Colors.white,
-                        letterSpacing: 2,
+                        // Hindi mein 0, English mein 2
+                        letterSpacing: isHindi ? 0 : 2, 
                       ),
                     ),
                     const SizedBox(height: 5),
@@ -154,11 +157,12 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     Text(
                       t.tagline,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: Colors.blueAccent,
-                        letterSpacing: 8,
+                        // Hindi mein 0, English mein 8 (elite stretch)
+                        letterSpacing: isHindi ? 0 : 8, 
                       ),
                     ),
                     const SizedBox(height: 60),
@@ -199,11 +203,12 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                               children: [
                                 Text(
                                   t.getStarted,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
-                                    letterSpacing: 1.2,
+                                    // Hindi mein 0, English mein 1.2
+                                    letterSpacing: isHindi ? 0 : 1.2, 
                                   ),
                                 ),
                                 const SizedBox(width: 12),
@@ -312,7 +317,7 @@ class _LangChip extends StatelessWidget {
         color: active
             ? Colors.blueAccent.shade100
             : Colors.white.withOpacity(0.5),
-        letterSpacing: 0.5,
+        letterSpacing: 0.5, // Switcher ke liye fixed spacing thik hai
       ),
     );
   }
