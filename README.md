@@ -27,4 +27,5 @@ Millions of students struggle to connect their dream jobs with realistic, action
 
 ## 👥 The Team
 * **Nipun Singh** - Frontend Architecture, UI/UX, & Data Architecture
-* **Hardik Latka** - Firebase Setup, Backend Logic, & AI Integration
+* **Hardik Latka** - Firebase Setup & Backend Logic
+* **Tanisha** - Gemini Integration
